@@ -34,7 +34,7 @@ enum Token  { BEGIN_SYM, END_SYM, EOF_SYM,
     ASSIGN_OP, PLUS_OP, MINUS_OP,
     ID, INT_LITERAL, STR_LITERAL};
 
-
+//THIS IS BRAYDEN
 class Scanner
 {
 public:
