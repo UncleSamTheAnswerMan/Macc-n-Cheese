@@ -33,6 +33,7 @@ enum Token  { BEGIN_SYM, END_SYM, EOF_SYM,
     LPAREN, RPAREN, SEMICOLON, COMMA,
     ASSIGN_OP, PLUS_OP, MINUS_OP,
     ID, INT_LITERAL, STR_LITERAL, blah };
+    ID, INT_LITERAL, STR_LITERAL, cool };
 
 class Scanner
 {
