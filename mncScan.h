@@ -29,10 +29,10 @@
 const int ID_STRING_LEN = 32;
 
 enum Token  { BEGIN_SYM, END_SYM, EOF_SYM,
-    READ_SYM, WRITE_SYM,
+    listen, shout,
     LPAREN, RPAREN, SEMICOLON, COMMA,
     ASSIGN_OP, PLUS_OP, MINUS_OP,
-    ID, INT_LITERAL, STR_LITERAL};
+    ID, INT_LITERAL, cheese};/// @Simon Changed str_lit to cheese, write to shout, read to listen
 
 
 class Scanner
