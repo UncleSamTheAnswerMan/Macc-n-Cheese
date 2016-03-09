@@ -54,35 +54,28 @@ void Scanner::BufferChar(char c)
 
 Token Scanner::CheckReserved()
 {
-    if (tokenBuffer == "$eof$"){return EOF_SYM;}
-    if (tokenBuffer == "bool"){return BOOL_SYM;}
-    if (tokenBuffer == "break"){return BREAK_SYM;}
-    if (tokenBuffer == "case"){return CASE_SYM;}
-    if (tokenBuffer == "cheese"){return CHEESE_SYM;}
-    if (tokenBuffer == "decs"){return DECS_SYM;}
-    if (tokenBuffer == "do"){return DO_SYM;}
-    if (tokenBuffer == "else"){return ELSE_SYM;}
-    if (tokenBuffer == "end"){return END_SYM;}
-    if (tokenBuffer == "false"){return FALSE_SYM;}
-    if (tokenBuffer == "float"){return FLOAT_SYM;}
-    if (tokenBuffer == "for"){return FOR_SYM;}
-    if (tokenBuffer == "hiphip"){return HIPHIP_SYM;}
-    if (tokenBuffer == "if"){return IF_SYM;}
-    if (tokenBuffer == "int"){return INT_SYM;}
-    if (tokenBuffer == "listen"){return LISTEN_SYM;}
-    if (tokenBuffer == "otherwise"){return OTHERWISE_SYM;}
-    if (tokenBuffer == "select"){return SELECT_SYM;}
-    if (tokenBuffer == "shout"){return SHOUT_SYM;}
-    if (tokenBuffer == "then"){return THEN_SYM;}
-    if (tokenBuffer == "true"){return TRUE_SYM;}
-    if (tokenBuffer == "while"){return WHILE_SYM;}
+    if (tolower(tokenBuffer) == "bool"){return BOOL_SYM;}
+    if (tolower(tokenBuffer) == "break"){return BREAK_SYM;}
+    if (tolower(tokenBuffer) == "case"){return CASE_SYM;}
+    if (tolower(tokenBuffer) == "cheese"){return CHEESE_SYM;}
+    if (tolower(tokenBuffer) == "decs"){return DECS_SYM;}
+    if (tolower(tokenBuffer) == "do"){return DO_SYM;}
+    if (tolower(tokenBuffer) == "else"){return ELSE_SYM;}
+    if (tolower(tokenBuffer) == "end"){return END_SYM;}
+    if (tolower(tokenBuffer) == "false"){return FALSE_SYM;}
+    if (tolower(tokenBuffer) == "float"){return FLOAT_SYM;}
+    if (tolower(tokenBuffer) == "for"){return FOR_SYM;}
+    if (tolower(tokenBuffer) == "hiphip"){return HIPHIP_SYM;}
+    if (tolower(tokenBuffer) == "if"){return IF_SYM;}
+    if (tolower(tokenBuffer) == "int"){return INT_SYM;}
+    if (tolower(tokenBuffer) == "listen"){return LISTEN_SYM;}
+    if (tolower(tokenBuffer) == "otherwise"){return OTHERWISE_SYM;}
+    if (tolower(tokenBuffer) == "select"){return SELECT_SYM;}
+    if (tolower(tokenBuffer) == "shout"){return SHOUT_SYM;}
+    if (tolower(tokenBuffer) == "then"){return THEN_SYM;}
+    if (tolower(tokenBuffer) == "true"){return TRUE_SYM;}
+    if (tolower(tokenBuffer) == "while"){return WHILE_SYM;}
     return ID;
-
-
-
-
-
-
 
 }
 
@@ -172,9 +165,9 @@ Token Scanner::GetNextToken()
 
         }
         else if (currentChar == '(')
-            return LPAREN;
+            return LBANANA;
         else if (currentChar == ')')
-            return RPAREN;
+            return RBANANA;
         else if (currentChar == ';')
             return SEMICOLON;
         else if (currentChar == ',')
@@ -184,23 +177,64 @@ Token Scanner::GetNextToken()
             BufferChar(currentChar);
             return PLUS_OP;
         }
-        else if (currentChar == ':')
-        if (sourceFile.peek() == '=')
-        {                             // := operator
-            currentChar = NextChar();
+        else if (currentChar == '-'){
+            BufferChar(currentChar);
+            return MINUS_OP;
+        }
+        else if (currentChar == '*'){
+            BufferChar(currentChar);
+            return MULT_OP;
+        }
+        else if (currentChar == '/'){
+            BufferChar(currentChar);
+            return DIV_OP;
+        }
+        else if (currentChar == '<'){
+            BufferChar(currentChar);
+            c = sourceFile.peek();
+            if (c == '='){// <=
+                currentChar = NextChar();
+                BufferChar(currentChar);
+                return LE_OP;
+            }
+            return LT_OP;
+        }
+        else if (currentChar == '>'){
+            BufferChar(currentChar);
+            c = sourceFile.peek();
+            if (c == '='){// >=
+                currentChar = NextChar();
+                BufferChar(currentChar);
+                return GE_OP;
+            }
+            return GT_OP;
+        }
+        else if (currentChar == '=') {
+            BufferChar(currentChar);
+            c = sourceFile.peek();
+            if (c == '=') {// == operator
+                currentChar = NextChar();
+                BufferChar(currentChar);
+                return EQ_OP1;
+            }
             return ASSIGN_OP;
         }
-        else
-            LexicalError(currentChar);
-        else if (currentChar == '-')
-        if (sourceFile.peek() == '-') // comment
-            do  // skip comment
+        else if (currentChar == '!'){
+            BufferChar(currentChar);
+            c = sourceFile.peek();
+            if (c == '!') { //!!
                 currentChar = NextChar();
-            while (currentChar != '\n');
-        else
-        {
-            BufferChar(currentChar);      // minus operator
-            return MINUS_OP;
+                BufferChar(currentChar);
+                return EQ_OP2;
+            }
+            else if (c == '='){
+                currentChar = NextChar();
+                BufferChar(currentChar);
+                return NE_OP;
+            }
+            else {
+                LexicalError(currentChar);
+            }
         }
         else
             LexicalError(currentChar);
