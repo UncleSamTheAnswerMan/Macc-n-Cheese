@@ -25,14 +25,20 @@
 #ifndef MACC_N_CHEESE_MNCSCAN_H
 #define MACC_N_CHEESE_MNCSCAN_H
 #include <string>
+using namespace std;
 
 const int ID_STRING_LEN = 32;
 
-enum Token  { BEGIN_SYM, END_SYM, EOF_SYM,
-    listen, shout,
-    LPAREN, RPAREN, SEMICOLON, COMMA,
-    ASSIGN_OP, PLUS_OP, MINUS_OP,
-    ID, INT_LITERAL, cheese};/// @Simon Changed str_lit to cheese, write to shout, read to listen
+enum Token  { EOF_SYM, BOOL_SYM, BREAK_SYM, CASE_SYM,
+CHEESE_SYM, DECS_SYM, DO_SYM, ELSE_SYM, END_SYM, FALSE_SYM,
+FLOAT_SYM, FOR_SYM, HIPHIP_SYM, IF_SYM, INT_SYM, LISTEN_SYM,
+OTHERWISE_SYM, SELECT_SYM, SHOUT_SYM, THEN_SYM, TRUE_SYM,
+WHILE_SYM, LSTAPLE, RSTAPLE, LBANANA, RBANANA, LMUSTACHE,
+RMUSTACHE, COLON, SEMICOLON, COMMA, ASSIGN_OP, PLUS_OP,
+MINUS_OP, MULT_OP, DIV_OP, LT_OP, LE_OP, GT_OP, GE_OP,
+EQ_OP1, EQ_OP2, NE_OP, ID, BOOL_LIT, INT_LIT, FLOAT_LIT,
+CHEESE_LIT};/// @Simon Changed str_lit to cheese, write to shout, read to listen
+///Hannah added all other tokens
 
 //THIS IS BRAYDEN ROAWIHREOWAHRWUAIR
 class Scanner
