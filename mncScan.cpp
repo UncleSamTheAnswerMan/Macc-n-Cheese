@@ -155,14 +155,31 @@ Token Scanner::GetNextToken()
                 BufferChar(currentChar);
                 c = sourceFile.peek();
             }
-            return INT_LITERAL;
+            return INT_LIT;
+        }
+        else if (isdigit(currentChar))
+        {
+            BufferChar(currentChar);
+            c = sourceFile.peek();
+            int decimalCount = 0; //a float must have exactly one period - HMH
+            while ((isdigit(c) && decimalCount <= 1) || (c == '.' && decimalCount < 1)){
+                if (c == '.')
+                {
+                    decimalCount++;
+                }
+                currentChar = NextChar();
+                BufferChar(currentChar);
+                c = sourceFile.peek();
+
+            }
+            return FLOAT_LIT;
         }
         else if (currentChar == '"') {//string literal
             do {
                 currentChar = NextChar();
                 c = sourceFile.peek();
                 if (currentChar == '"' && c != '"') {//" followed by not a quote
-                    return STR_LITERAL;
+                    return CHEESE_LIT;
                 } else if (currentChar == '"' && c == '"') {//quote followed by quote (escaped quote)
                     currentChar = NextChar();//ignore one quote because assembly escapes with :
                 }
@@ -172,9 +189,9 @@ Token Scanner::GetNextToken()
 
         }
         else if (currentChar == '(')
-            return LPAREN;
+            return LBANANA;
         else if (currentChar == ')')
-            return RPAREN;
+            return RBANANA;
         else if (currentChar == ';')
             return SEMICOLON;
         else if (currentChar == ',')
