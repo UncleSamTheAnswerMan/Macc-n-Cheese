@@ -181,14 +181,33 @@ Token Scanner::GetNextToken()
             } while (c != '\n');//go until newLine or it hits return
 
         }
-        else if (currentChar == '(')
+        else if (currentChar == '('){
             return LBANANA;
-        else if (currentChar == ')')
+        }
+        else if (currentChar == ')'){
             return RBANANA;
-        else if (currentChar == ';')
+        }
+        else if (currentChar == ';'){
             return SEMICOLON;
-        else if (currentChar == ',')
+        }
+        else if (currentChar == ','){
             return COMMA;
+        }
+        else if (currentChar == '{'){
+            return LMUSTACHE;
+        }
+        else if (currentChar == '}'){
+            return RMUSTACHE;
+        }
+        else if (currentChar == '['){
+            return LSTAPLE;
+        }
+        else if (currentChar == ']'){
+            return RSTAPLE;
+        }
+        else if (currentChar == ':'){
+            return COLON;
+        }
         else if (currentChar == '+')
         {
             BufferChar(currentChar);
