@@ -142,18 +142,6 @@ Token Scanner::GetNextToken()
         {                                // integer literal
             BufferChar(currentChar);
             c = sourceFile.peek();
-            while (isdigit(c))
-            {
-                currentChar = NextChar();
-                BufferChar(currentChar);
-                c = sourceFile.peek();
-            }
-            return INT_LIT;
-        }
-        else if (isdigit(currentChar))
-        {
-            BufferChar(currentChar);
-            c = sourceFile.peek();
             int decimalCount = 0; //a float must have exactly one period - HMH
             while ((isdigit(c) && decimalCount <= 1) || (c == '.' && decimalCount < 1)){
                 if (c == '.')
@@ -165,8 +153,16 @@ Token Scanner::GetNextToken()
                 c = sourceFile.peek();
 
             }
-            return FLOAT_LIT;
+            if (decimalCount == 0)
+            {
+                return INT_LIT;
+            }
+            else
+            {
+                return FLOAT_LIT;
+            }
         }
+
         else if (currentChar == '"') {//string literal
             do {
                 currentChar = NextChar();
