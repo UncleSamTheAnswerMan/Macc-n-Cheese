@@ -29,7 +29,6 @@ using namespace std;
 extern ifstream sourceFile;
 extern ofstream outFile, listFile;
 
-#include "mascan.h"
 
 // *******************
 // **  Constructor  **
