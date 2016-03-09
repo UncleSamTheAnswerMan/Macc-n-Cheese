@@ -55,11 +55,36 @@ void Scanner::BufferChar(char c)
 
 Token Scanner::CheckReserved()
 {
-    if (tokenBuffer == "BEGIN") return BEGIN_SYM;
-    if (tokenBuffer == "END") return END_SYM;
-    if (tokenBuffer == "READ") return READ_SYM;
-    if (tokenBuffer == "WRITE") return WRITE_SYM;
+    if (tokenBuffer == "$eof$"){return EOF_SYM;}
+    if (tokenBuffer == "bool"){return BOOL_SYM;}
+    if (tokenBuffer == "break"){return BREAK_SYM;}
+    if (tokenBuffer == "case"){return CASE_SYM;}
+    if (tokenBuffer == "cheese"){return CHEESE_SYM;}
+    if (tokenBuffer == "decs"){return DECS_SYM;}
+    if (tokenBuffer == "do"){return DO_SYM;}
+    if (tokenBuffer == "else"){return ELSE_SYM;}
+    if (tokenBuffer == "end"){return END_SYM;}
+    if (tokenBuffer == "false"){return FALSE_SYM;}
+    if (tokenBuffer == "float"){return FLOAT_SYM;}
+    if (tokenBuffer == "for"){return FOR_SYM;}
+    if (tokenBuffer == "hiphip"){return HIPHIP_SYM;}
+    if (tokenBuffer == "if"){return IF_SYM;}
+    if (tokenBuffer == "int"){return INT_SYM;}
+    if (tokenBuffer == "listen"){return LISTEN_SYM;}
+    if (tokenBuffer == "otherwise"){return OTHERWISE_SYM;}
+    if (tokenBuffer == "select"){return SELECT_SYM;}
+    if (tokenBuffer == "shout"){return SHOUT_SYM;}
+    if (tokenBuffer == "then"){return THEN_SYM;}
+    if (tokenBuffer == "true"){return TRUE_SYM;}
+    if (tokenBuffer == "while"){return WHILE_SYM;}
     return ID;
+
+
+
+
+
+
+
 }
 
 void Scanner::ClearBuffer()
