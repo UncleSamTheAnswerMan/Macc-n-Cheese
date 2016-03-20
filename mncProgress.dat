@@ -28,7 +28,7 @@
 ")"                 RBANANA. -> Done
 "{"                 LMUSTACHE. -> Done
 "}"                 RMUSTACHE. -> Done
-":"                 COLON. - Done
+":"                 COLON. -> Done
 ";"                 SEMICOLON. -> Done 
 ","                 COMMA. -> Done
 "="                 ASSIGN_OP. -> Done 
@@ -43,10 +43,11 @@
 "=="                EQ_OP1. -> Done
 "!!"                EQ_OP2. -> Done
 "!="                NE_OP. -> Done
-"ID"                ID.
+"ID"                ID. -> Done
 "INT_LIT"           INT_LIT. -> Done
 "FLOAT_LIT"         FLOAT_LIT. -> Done
-"CHEESE_LIT"        CHEESE_LIT. -> Done 
+"CHEESE_LIT"        CHEESE_LIT. -> Done
+
 *grammar
 <program>           <stmt_list>
 <stmt_list>         <statement> <stmt_tail>
