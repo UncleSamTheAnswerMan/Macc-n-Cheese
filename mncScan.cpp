@@ -46,35 +46,46 @@ Scanner::Scanner()
 // **  Private Member Functions  **
 // ********************************
 
+string Scanner::MakeItUp(string s)
+{
+    string tempString = string(s);
+    for (int i = 0; i  < tempString.size(); i++) {
+        tempString[i] = (char)toupper(tempString[i]);
+    }
+
+    return tempString;
+}
+
 void Scanner::BufferChar(char c)
 {
     if (tokenBuffer.length() < ID_STRING_LEN)
-        tokenBuffer += toupper(c);
+        tokenBuffer += c;
 }
 
 Token Scanner::CheckReserved()
 {
-    if (tolower(tokenBuffer) == "bool"){return BOOL_SYM;}
-    if (tolower(tokenBuffer) == "break"){return BREAK_SYM;}
-    if (tolower(tokenBuffer) == "case"){return CASE_SYM;}
-    if (tolower(tokenBuffer) == "cheese"){return CHEESE_SYM;}
-    if (tolower(tokenBuffer) == "decs"){return DECS_SYM;}
-    if (tolower(tokenBuffer) == "do"){return DO_SYM;}
-    if (tolower(tokenBuffer) == "else"){return ELSE_SYM;}
-    if (tolower(tokenBuffer) == "end"){return END_SYM;}
-    if (tolower(tokenBuffer) == "false"){return FALSE_SYM;}
-    if (tolower(tokenBuffer) == "float"){return FLOAT_SYM;}
-    if (tolower(tokenBuffer) == "for"){return FOR_SYM;}
-    if (tolower(tokenBuffer) == "hiphip"){return HIPHIP_SYM;}
-    if (tolower(tokenBuffer) == "if"){return IF_SYM;}
-    if (tolower(tokenBuffer) == "int"){return INT_SYM;}
-    if (tolower(tokenBuffer) == "listen"){return LISTEN_SYM;}
-    if (tolower(tokenBuffer) == "otherwise"){return OTHERWISE_SYM;}
-    if (tolower(tokenBuffer) == "select"){return SELECT_SYM;}
-    if (tolower(tokenBuffer) == "shout"){return SHOUT_SYM;}
-    if (tolower(tokenBuffer) == "then"){return THEN_SYM;}
-    if (tolower(tokenBuffer) == "true"){return TRUE_SYM;}
-    if (tolower(tokenBuffer) == "while"){return WHILE_SYM;}
+    string upperTemp = MakeItUp(tokenBuffer);
+    if (upperTemp == "BOOL"){return BOOL_SYM;}
+    if (upperTemp == "BREAK"){return BREAK_SYM;}
+    if (upperTemp == "CASE"){return CASE_SYM;}
+    if (upperTemp == "CHEESE"){return CHEESE_SYM;}
+    if (upperTemp == "DECS"){return DECS_SYM;}
+    if (upperTemp == "DO"){return DO_SYM;}
+    if (upperTemp == "ELSE"){return ELSE_SYM;}
+    if (upperTemp == "END"){return END_SYM;}
+    if (upperTemp == "FALSE"){return FALSE_SYM;}
+    if (upperTemp == "FLOAT"){return FLOAT_SYM;}
+    if (upperTemp == "FOR"){return FOR_SYM;}
+    if (upperTemp == "HIPHIP"){return HIPHIP_SYM;}
+    if (upperTemp == "IF"){return IF_SYM;}
+    if (upperTemp == "INT"){return INT_SYM;}
+    if (upperTemp == "LISTEN"){return LISTEN_SYM;}
+    if (upperTemp == "OTHERWISE"){return OTHERWISE_SYM;}
+    if (upperTemp == "SELECT"){return SELECT_SYM;}
+    if (upperTemp == "SHOUT"){return SHOUT_SYM;}
+    if (upperTemp == "THEN"){return THEN_SYM;}
+    if (upperTemp == "TRUE"){return TRUE_SYM;}
+    if (upperTemp == "WHILE"){return WHILE_SYM;}
     return ID;
 
 }

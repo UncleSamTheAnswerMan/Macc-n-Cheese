@@ -58,6 +58,9 @@ public:
 
 private:
 
+	string MakeItUp(string s);//goes through a string character by character
+	// and transforms it into uppercase, then returns the full string as uppercase
+
     void BufferChar(char c);
     // Appends character c to the end of the token buffer provided that the
     // buffer is not full.
