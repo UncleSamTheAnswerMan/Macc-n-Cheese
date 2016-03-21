@@ -198,5 +198,8 @@ void outputTokens(string fName){
             tokenFile << theToken <<endl;
         }while(currentToken != EOF_SYM);
     }
-
+    sourceFile.close();
+    outFile.close();
+    listFile.close();
+    tokenFile.close();
 }
