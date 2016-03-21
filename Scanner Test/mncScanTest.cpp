@@ -194,6 +194,8 @@ void outputTokens(string fName){
                 case(CHEESE_LIT):
                     theToken = "CHEESE_LIT";
                     break;
+                default:
+                    theToken = "NOT A TOKEN";
             }
             tokenFile << theToken <<endl;
         }while(currentToken != EOF_SYM);
