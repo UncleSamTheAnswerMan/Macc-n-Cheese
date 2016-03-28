@@ -1,0 +1,26 @@
+decs
+{
+cheese: a;
+int: b, c;
+float: this;
+bool: there;
+hiphip[5] cheese: array;
+hiphip[5] int: array1;
+hiphip[5] float: array2;
+hiphip[5] bool: array3;
+}
+
+a = "how are you?";
+b = 2;
+this = 2.01;
+there = false;
+array[1] = "this awsome";
+array1[2] = 22;
+array2[3] = 2222.1;
+
+shout a, b;
+shout this;
+shout this, there, array[1];
+shout array1[2], array2[3], array3[4];
+shout 1, 2;
+shout 1, this, array[1], 22, 22.1;

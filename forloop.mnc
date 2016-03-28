@@ -1,0 +1,22 @@
+decs
+{
+int: i, j, k;
+hiphip[5] cheese: array;
+hiphip[5] int: array1;
+hiphip[5] float: array2;
+hiphip[5] bool: array3;
+}
+for(i = 0; i < 5; i++)
+{
+	array1[i] = i;
+	array2[i] = i + .12;
+	array3[i] = false;
+	array[i] = "";
+}
+for(j = 0; j < 5; j++)
+{
+	shout array1[i];
+	shout array2[i];
+	shout array3[i];
+	shout array[i];
+}

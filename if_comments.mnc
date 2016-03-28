@@ -1,0 +1,25 @@
+/:I dont know weather or not this is how we exsicute if stament
+Eather: if(this) shout this;
+	else nothing
+	end
+
+or: if(this)
+	shout this;
+    else 
+	do nothing; 
+    end
+
+or: if(this)
+	this;
+    end:/
+decs
+{
+int: count;
+}
+
+count = 0;
+
+count = 1;
+if(count == 1) shout "cool";
+else shout "Nice";
+end
