@@ -1,0 +1,14 @@
+decs
+{
+cheese: a;
+int: b, c;
+float: this;
+hiphip[5] cheese: array;
+hiphip[5] int: array1;
+}
+
+listen a;
+listen b, c;
+listen this;
+listen array[1];
+listen array1[2];
