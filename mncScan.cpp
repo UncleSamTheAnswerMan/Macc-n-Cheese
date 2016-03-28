@@ -86,6 +86,7 @@ Token Scanner::CheckReserved()
     if (upperTemp == "THEN"){return THEN_SYM;}
     if (upperTemp == "TRUE"){return TRUE_SYM;}
     if (upperTemp == "WHILE"){return WHILE_SYM;}
+    if (upperTemp == "UNTIL"){return UNTIL_SYM;}
     return ID;
 
 }

@@ -37,7 +37,7 @@ WHILE_SYM, LSTAPLE, RSTAPLE, LBANANA, RBANANA, LMUSTACHE,
 RMUSTACHE, COLON, SEMICOLON, COMMA, ASSIGN_OP, PLUS_OP,
 MINUS_OP, MULT_OP, DIV_OP, LT_OP, LE_OP, GT_OP, GE_OP,
 EQ_OP1, EQ_OP2, NE_OP, ID, BOOL_LIT, INT_LIT, FLOAT_LIT,
-CHEESE_LIT};/// @Simon Changed str_lit to cheese, write to shout, read to listen
+CHEESE_LIT, UNTIL_SYM};/// @Simon Changed str_lit to cheese, write to shout, read to listen
 ///Hannah added all other tokens
 
 //THIS IS BRAYDEN ROAWIHREOWAHRWUAIR
