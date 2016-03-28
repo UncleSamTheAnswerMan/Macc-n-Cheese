@@ -1,0 +1,132 @@
+//This is going to be a test program for our scanner.
+/: Above was a
+single line comment.
+This is a multi-line comment. :/
+
+decs { int: testIntA, testIntB, testIntListen, i;
+float: testFloatA, testFloatB, testFloatListen;
+cheese: testTheCheese, testCheeseListen;
+bool: testTheBool;
+hiphip[5] int: testIntHipHip;
+hiphip[5] float: testFloatHipHip;
+}
+
+testIntA = 5;
+testIntB = 10;
+
+testFloatA = 5.5;
+testFloatB = 10.5;
+
+testTheBool = true;
+
+testTheCheese = "This is a valid cheese.";
+listen testCheeseListen; //To read into the cheese from user
+
+shout testIntA, testIntB, testFloatA, testFloatB;
+shout testTheBool, testTheCheese, testCheeseListen;
+
+if (testTheBool == true)
+    shout "Testing the if statement!";
+end
+
+testTheBool = false;
+
+if (testTheBool == true)
+    shout "Testing the if statement again! This shouldn't be shouted.";
+else
+    shout "Testing out the else statement! This should be shouted.";
+end
+
+select (testIntA)
+case 5:
+    shout "The integer was 5! This should be shouted!";
+case 4:
+    shout "This isn't right.";
+case 3:
+    shout "This isn't right either.";
+otherwise:
+    shout "There was a real problem somewhere.";
+end
+
+shout "Gonna shout out the hip hips after we fill 'em now!";
+for (i = 0; i < 5; i = i + 1)
+    testIntHipHip[i] = testIntA + i;
+    testFloatHipHip[i] = testFloatA + i;
+    shout testIntHipHip[i];
+    shout testFloatHipHip[i];
+end
+
+
+
+testTheBool = true;
+while (testTheBool)
+    i = 0;
+    shout "Testing our while!";
+    i = i + 1;
+    if (i == 5)
+        testTheBool = false;
+    end
+end
+
+i = 0;
+do
+    shout i;
+    i = i + 1;
+while(i <= testIntB)
+
+shout "Now let's do some maths.";
+shout "Integer 1 is: ", testIntA;
+shout "Integer 2 is: ", testIntB;
+i = testIntA + testIntB;
+shout "Adding them together gives you:", i;
+shout "Now subtract 1.";
+i = i - 1;
+shout "Here's the new number: ", i;
+shout "Now multiply by 2.";
+i = i * 2;
+shout "Here it is now: ", i;
+shout "Now divide by 2.";
+i = i / 2;
+shout "Here it is again: ", i, "\n"";
+
+if (5 < 10)
+    shout "5 is less than 10!";
+else
+    shout "Something is flubbed in the < relational operator.";
+end
+
+if (10 <= 10)
+    shout "10 is less than or equal to 10!";
+else
+    shout "Something is flubbed in the <= relational operator.";
+end
+
+if (10 > 5)
+    shout "10 is greater than 5!";
+else
+    shout "Something is flubbed in the > relational operator";
+end
+
+if (15 >= 15)
+    shout "15 is greater than or equal to 15!"
+else
+    shout "Something is flubbed in the >= relational operator.";
+end
+
+if (5 == 5)
+    shout "5 is equal to 5!;
+else
+    shout "Something is flubbed in the == relational operator.";
+end
+
+if (5 !! 5)
+    shout "5 is equal to 5!;
+else
+    shout "Something is flubbed in the !! relational operator.";
+end
+
+if (1 != 2)
+    shout "1 is not equal to 2.";
+else
+    shout "Something is flubbed in the != relational operator.";
+end

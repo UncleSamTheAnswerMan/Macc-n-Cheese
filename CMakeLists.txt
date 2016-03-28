@@ -5,6 +5,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(SOURCE_FILES
     mncScan.cpp
-    mncScan.h)
+    mncScan.h "Scanner Test/mncScanTest.cpp")
 
 add_executable(Macc-n-Cheese ${SOURCE_FILES})

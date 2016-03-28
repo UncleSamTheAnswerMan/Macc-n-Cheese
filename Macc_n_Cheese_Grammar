@@ -1,0 +1,166 @@
+Action Symbol Notes: 
+1. Do we need more than one ProcessLiteral – one for int/cheese/float, or will our code handle all of them?
+2. Do we need more than one ProcessOp? Right now there's ProcessArithOp and ProcessRelOp.
+3. NOT FINISHED
+
+
+
+
+<<goal>>         ->  <stmt_list> “EOF_SYM” #Finish
+
+
+<stmt_list>      ->  <statement> { <statement> }
+
+<stmt_list>      ->  <statement> <stmt_tail>
+<stmt_tail>      ->  <statement> <stmt_tail>
+                     | “”
+
+<statement>      ->  <simple_stmt>  
+                     | <struct_stmt>
+
+<simple_stmt>    ->  <assign_stmt>
+                     | <listen_stmt>
+                     | <shout_stmt>
+                     | <break_stmt>
+
+<assign_stmt>    ->  <variable> “=” <expression> “;” #Assign
+				 | <variable> “=” <init> “;” #Assign
+
+<listen_stmt>    ->  “listen” <var_list> “;”
+
+
+<var_list>       ->  <variable> { “,” <variable> }
+
+<var_list>       ->  <variable> <var_list_tail>
+<var_list_tail>  ->  “,” <variable> <var_list_tail>
+                     | “”
+
+
+<variable>	  ->  “ID” [ “[” <expression> “]” ] #ProcessID
+
+<variable>       ->  “ID” <variable_tail> #ProcessID
+<variable_tail>  ->  “[” <expression> “]”
+                     | “”
+
+
+<item_list>	  ->  <expression> { “,” <expression> }
+
+<item_list>      ->  <expression> <item_list_tail>  
+<item_list_tail> ->  <expression> <item_list_tail>
+                    | “”
+
+<break_stmt>     ->  “break” “;”
+
+<shout_stmt>     ->  “shout”  <item_list> “;” #NewLine
+<struct_stmt>    ->  <if_stmt>
+                     | <loop_stmt>
+                     | <while_stmt> 
+				 | <for_stmt>
+				 | <select_stmt>
+				 | <declaration>
+
+
+<if_stmt>		  ->  “if” “(” <condition> “)”
+					<stmt_list>
+ [ “else” <stmt_list> ] 
+     “end”
+
+<if_stmt>	       ->  “if” “(” <condition> “)” <stmt_list>
+      <else_clause> “end”
+<else_clause>    ->  “else” <stmt_list>
+                     | “”
+
+<loop_stmt>     ->  “do” <stmt_list> “while” “(“ <condition> “)” “;”
+
+<while_stmt>    ->  “while” “)” <condition> “)” <stmt_list> “end”
+
+<for_stmt>    	 ->  “for” “(” <assign_stmt> “;” <condition> “;”
+                <assign_stmt> “)” <stmt_list> “end”
+
+<select_stmt>   ->  “select” “(” <expression> “)” <case_list>
+                <case_list_end>
+
+<case_list>	  ->  <case> { “,” <case_list> }
+
+<case_list>	 ->  <case> <case_list_tail>
+<case_list_tail> ->  <case> <case_list_tail>
+                     | “”
+
+<case>		 ->   “case” <int_list> “:” <stmt_list> 
+
+<int_list>	  ->  “INT_LIT” { “,” <int_list> } #ProcessLiteral
+
+<int_list>	 ->   “INT_LIT” <int_list_tail> #ProcessLiteral
+<int_list_tail> ->  “,”  “INT_LIT” <int_list_tail> #ProcessLiteral
+                     | “”
+
+<case_list_end> ->	“otherwise” <stmt_list> “end”
+				| “otherwise” “:” <stmt_list> “end”
+
+
+<condition>     ->  <expression> [ <rel_op> <expression> ]
+
+<condition>     ->  <expression> <cond_tail>
+<cond_tail>     ->  <rel_op> <expression>
+                    | “”
+
+
+<expression>  	 ->  <factor> { <add_op> <factor> }
+
+<expression>    ->  <factor> <expr_tail>
+<expr_tail>     ->  <add_op> <factor> <expr_tail> 
+                    | “”
+
+
+<factor>		 ->  <primary> { <mult_op> <primary> }
+
+<factor>        ->  <primary> <factor_tail>
+<factor_tail>       <mult_op> <primary> <factor_tail>
+                    | “”
+
+
+<primary>	      ->  <literal>
+                    | <variable>
+                    | “(” <expression> “)” 
+
+<type>          ->  “bool” | “cheese” “[” “INT_LIT” “]” | “cheese” 
+				| “int” | “float” #ProcessLiteral
+
+<bool_lit>      ->  “false” | “true”
+
+<literal>       ->  <bool_lit> | “INT_LIT” | “FLOAT_LIT”
+                   | “STRING_LIT” #ProcessLiteral
+
+<mult_op>       ->  “*” | “/” #ProccesArithOp
+
+<add_op>        ->  “+” | “-” #ProccesArithOp
+
+<rel_op>        ->  “<” | “<=” | “>” | “>=” | “==” | “!!” | “!=” #ProcessRelOp
+
+<var_decs>       ->  “decs” “{” <dec_list> “}”
+
+
+
+
+
+<dec_list>	  ->  <declaration> { <declaration> }
+
+<dec_list>       ->  <declaration> <dec_tail>
+<dec_tail>       ->  <declaration> <dec_tail>
+                     | “”
+
+<declaration>    ->  <type> “:” <var_dec_list> “;”
+				 | “hiphip” “[” “INT_LIT” “]” <type>
+				 <var_dec_list> “;”
+
+
+<var_dec_list>   ->  “ID” { “,” <var_dec_list> } #ProcessID
+
+<var_dec_list>   ->  “ID” <var_dec_tail> #ProcessID
+<var_dec_tail>   ->  “,” “ID” <var_dec_tail> #ProcessID
+                     | “”
+
+<init>		  ->  “{” <init_list> “}”
+<init_list>      ->  <expression> <init_tail>
+<init_tail>      ->  “,” <expression> <init_tail>
+                     | “”
