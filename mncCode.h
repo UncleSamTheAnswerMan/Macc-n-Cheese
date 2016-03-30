@@ -8,23 +8,26 @@
 
 using namespace std;
 
-enum shoutType {floatType, intType, stringType};
+enum ExprType {floatType, intType, cheeseType, boolType, IDType};
 
-struct ShoutExpr {
-    shoutType theType;
+struct Expr {
+    ExprType theType;
     int intVal;
-    string stringVal;
     float floatVal;
+    bool boolVal;
+    string cheeseVal;
+    string ID
 };
 
 class CodeGen{
 public:
-    void Shout(ShoutExpr shoutStuff);
+    void Shout(Expr& shoutStuff);
 
-    void ProcessLit();
+    void ProcessLit(Expr& expr);
 
 private:
-
+    void IntToAlpha(int val, string& str);
+    // Makes a string representation for a positive integer val.
 };
 
 #endif //MACC_N_CHEESE_MNCCODE_H

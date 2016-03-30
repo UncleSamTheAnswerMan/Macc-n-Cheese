@@ -132,14 +132,17 @@ void Parser::DecList()
 	DecTail();
 }
 
-void Parser::BoolLit()
+void Parser::BoolLit(Expr& expr)
 {
+    expr.theType = boolType;
 	switch (NextToken())
 	{
 	case FALSE_SYM:
+        expr.boolVal = false;
 		Match(FALSE_SYM);
 		break;
 	case TRUE_SYM:
+        expr.boolVal = true;
 		Match(TRUE_SYM);
 		break;
 	default:
@@ -191,21 +194,24 @@ void Parser::Type()
 	}
 }
 
-void Parser::Literal()
+void Parser::Literal(Expr& expr)
 {
 	switch (NextToken())
 	{
 	case FALSE_SYM:
 	case TRUE_SYM:
-		BoolLit();
+		BoolLit(expr);
 		break;
 	case INT_LIT:
+        expr.theType = intType;
 		Match(INT_LIT);
 		break;
 	case FLOAT_LIT:
+        expr.theType = floatType;
 		Match(FLOAT_LIT);
 		break;
 	case CHEESE_LIT:
+        expr.theType = cheeseType;
 		Match(CHEESE_LIT);
 		break;
 	default:
@@ -260,7 +266,7 @@ void Parser::FactorTail()
 	}
 }
 
-void Parser::Primary()
+void Parser::Primary(Expr& expr)
 {
 	switch (NextToken())
 	{
@@ -269,8 +275,8 @@ void Parser::Primary()
 	case INT_LIT:
 	case FLOAT_LIT:
 	case CHEESE_LIT:
-		Literal();
-		// code.ProcessLit();
+		Literal(expr);
+		code.ProcessLit(expr);
 		break;
 	case ID:
 		Variable();
@@ -331,9 +337,9 @@ void Parser::ExprTail()
 	}
 }
 
-void Parser::Factor()
+void Parser::Factor(Expr& expr)
 {
-	Primary();
+	Primary(expr);
 	FactorTail();
 }
 
@@ -561,9 +567,10 @@ void Parser::ItemListTail()
 	switch (NextToken())
 	{
 	case COMMA:
+        Expr shoutExpr;
 		Match(COMMA);
-		Expression();
-		// code.Shout();
+		Expression(shoutExpr);
+        code.Shout(shoutExpr);
 		ItemListTail();
 		break;
 	case SEMICOLON:
@@ -575,8 +582,9 @@ void Parser::ItemListTail()
 
 void Parser::ItemList()
 {
-	Expression();
-	// code.Shout();
+	Expr shoutExpr;
+	Expression(shoutExpr);
+	code.Shout(shoutExpr);
 	ItemListTail();
 }
 
@@ -644,9 +652,9 @@ void Parser::InitList()
 	InitTail();
 }
 
-void Parser::Expression()
+void Parser::Expression(Expr& expr)
 {
-	Factor();
+	Factor(expr);
 	ExprTail();
 }
 
