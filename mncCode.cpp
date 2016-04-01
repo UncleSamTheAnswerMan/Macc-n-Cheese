@@ -12,6 +12,7 @@ void CodeGen::Shout(Expr& shoutStuff) {
     
 }
 void CodeGen::DefineVar(const ExprType type){
+    string ASMDecString = "";
 
 
 }
