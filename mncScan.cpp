@@ -187,7 +187,6 @@ Token Scanner::GetNextToken()
                 stringBuffer += currentChar;//add string stuff to stringBuffer
 
             } while (c != '\n');//go until newLine or it hits return
-
         }
         else if (currentChar == '('){
             return LBANANA;

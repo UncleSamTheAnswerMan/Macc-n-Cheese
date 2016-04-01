@@ -35,9 +35,9 @@ private:
 
 	void InitTail();
 
-	void VarDecTail();
+	void VarDecTail(string type);
 
-	void VarDecList();
+	void VarDecList(string type);
 
 	void DecTail();
 

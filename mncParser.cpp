@@ -73,14 +73,14 @@ void Parser::VarDecTail()
 	}
 }
 
-void Parser::VarDecList()
+void Parser::VarDecList(const ExprType type)
 {
 	Match(ID);
-	// code.DefineVar();
-	VarDecTail();
+	code.DefineVar(type);
+	VarDecTail(type);
 }
 
-void Parser::DecTail()
+void Parser::DecTail(const ExprType type)
 {
 	switch (NextToken())
 	{
@@ -110,7 +110,7 @@ void Parser::Declaration()
 	case INT_SYM:
 		Type(type);
 		Match(COLON);
-		VarDecList();
+		VarDecList(type);
 		Match(SEMICOLON);
 		break;
 	case HIPHIP_SYM:
