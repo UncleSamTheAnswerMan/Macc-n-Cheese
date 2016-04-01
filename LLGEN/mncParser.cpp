@@ -56,15 +56,15 @@ void Parser::InitTail()
 	}
 }
 
-void Parser::VarDecTail()
+void Parser::VarDecTail(type)///passes in type for codegen
 {
 	switch (NextToken())
 	{
 	case COMMA:
 		Match(COMMA);
 		Match(ID);
-		// code.DefineVar();
-		VarDecTail();
+		// code.DefineVar(); pass in type then read id from scanner buffer
+		VarDecTail(type);
 		break;
 	case SEMICOLON:
 		break;
@@ -73,11 +73,11 @@ void Parser::VarDecTail()
 	}
 }
 
-void Parser::VarDecList()
+void Parser::VarDecList(type)///passes in type for codegen
 {
 	Match(ID);
-	// code.DefineVar();
-	VarDecTail();
+	// code.DefineVar();// pass in type then read id from scanner buffer
+	VarDecTail(type);
 }
 
 void Parser::DecTail()
@@ -101,15 +101,16 @@ void Parser::DecTail()
 
 void Parser::Declaration()
 {
+	string type;
 	switch (NextToken())
 	{
 	case BOOL_SYM:
 	case CHEESE_SYM:
 	case FLOAT_SYM:
 	case INT_SYM:
-		Type();
+		type = Type();
 		Match(COLON);
-		VarDecList();
+		VarDecList(type);
 		Match(SEMICOLON);
 		break;
 	case HIPHIP_SYM:
@@ -117,7 +118,7 @@ void Parser::Declaration()
 		Match(LSTAPLE);
 		Match(INT_LIT);
 		Match(RSTAPLE);
-		Type();
+		type = Type();
 		VarDecList();
 		Match(SEMICOLON);
 		break;
@@ -176,16 +177,16 @@ void Parser::Type()
 	{
 	case BOOL_SYM:
 		Match(BOOL_SYM);
-		break;
+		return "BOOl_SYM";
 	case INT_SYM:
 		Match(INT_SYM);
-		break;
+		return "INT_SYM";
 	case FLOAT_SYM:
 		Match(FLOAT_SYM);
-		break;
+		return "FlOAT_SYM";
 	case CHEESE_SYM:
 		CheeseType();
-		break;
+		return "CHEESE_SYM";
 	default:
 		SyntaxError(NextToken(), "");
 	}

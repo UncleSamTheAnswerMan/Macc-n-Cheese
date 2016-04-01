@@ -11,6 +11,10 @@ extern Scanner scan;
 void CodeGen::Shout(Expr& shoutStuff) {
     
 }
+void CodeGen::DefineVar(const ExprType type){
+
+
+}
 
 void CodeGen::ProcessLit(Expr& expr) {
     switch (expr.theType){

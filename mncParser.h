@@ -37,9 +37,9 @@ private:
 
 	void VarDecTail();
 
-	void VarDecList();
+	void VarDecList(const ExprType type);
 
-	void DecTail();
+	void DecTail(const ExprType type);
 
 	void Declaration();
 
@@ -51,7 +51,7 @@ private:
 
 	void CheeseType();
 
-	void Type();
+	void Type(ExprType& type);
 
 	void Literal();
 

@@ -25,6 +25,8 @@ public:
 
     void ProcessLit(Expr& expr);
 
+    void DefineVar(const ExprType type);
+
 private:
     void IntToAlpha(int val, string& str);
     // Makes a string representation for a positive integer val.
