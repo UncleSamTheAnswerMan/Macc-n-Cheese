@@ -63,7 +63,6 @@ public:
     void Start();
     // Initializes the compiler.
 
-
     void DefineVar(const ExprType type);
 
 private:

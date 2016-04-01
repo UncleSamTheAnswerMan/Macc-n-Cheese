@@ -9,6 +9,8 @@
 using namespace std;
 
 #include "mncParser.h"
+extern Scanner scan;
+extern CodeGen code;
 
 Parser::Parser()
 {
@@ -42,11 +44,12 @@ void Parser::Match(Token t)
 
 void Parser::InitTail()
 {
+    Expr initTailExpr;
 	switch (NextToken())
 	{
 	case COMMA:
 		Match(COMMA);
-		Expression();
+		Expression(initTailExpr);
 		InitTail();
 		break;
 	case RMUSTACHE:
@@ -73,14 +76,14 @@ void Parser::VarDecTail()
 	}
 }
 
-void Parser::VarDecList(const ExprType type)
+void Parser::VarDecList(ExprType& type)
 {
 	Match(ID);
 	code.DefineVar(type);
-	VarDecTail(type);
+	VarDecTail();
 }
 
-void Parser::DecTail(const ExprType type)
+void Parser::DecTail()
 {
 	switch (NextToken())
 	{
@@ -119,7 +122,7 @@ void Parser::Declaration()
 		Match(INT_LIT);
 		Match(RSTAPLE);
 		Type(type);
-		VarDecList();
+		VarDecList(type);
 		Match(SEMICOLON);
 		break;
 	default:
@@ -241,13 +244,14 @@ void Parser::MultOp()
 
 void Parser::FactorTail()
 {
+    Expr factorTailExpr;
 	switch (NextToken())
 	{
 	case MULT_OP:
 	case DIV_OP:
 		MultOp();
 		// code.ProcessOp();
-		Primary();
+		Primary(factorTailExpr);
 		// code.GenInfix();
 		FactorTail();
 		break;
@@ -273,6 +277,7 @@ void Parser::FactorTail()
 
 void Parser::Primary(Expr& expr)
 {
+    Expr primaryExpr;
 	switch (NextToken())
 	{
 	case FALSE_SYM:
@@ -289,7 +294,7 @@ void Parser::Primary(Expr& expr)
 		break;
 	case LBANANA:
 		Match(LBANANA);
-		Expression();
+		Expression(primaryExpr);
 		Match(RBANANA);
 		break;
 	default:
@@ -314,13 +319,14 @@ void Parser::AddOp()
 
 void Parser::ExprTail()
 {
+    Expr exprTailExpr;
 	switch (NextToken())
 	{
 	case PLUS_OP:
 	case MINUS_OP:
 		AddOp();
 		// code.ProcessOp();
-		Factor();
+		Factor(exprTailExpr);
 		// code.GenInfix();
 		ExprTail();
 		break;
@@ -380,6 +386,7 @@ void Parser::RelOp()
 
 void Parser::CondTail()
 {
+    Expr condTailExpr;
 	switch (NextToken())
 	{
 	case LT_OP:
@@ -391,7 +398,7 @@ void Parser::CondTail()
 	case NE_OP:
 		RelOp();
 		// code.ProcessOp();
-		Expression();
+		Expression(condTailExpr);
 		break;
 	case RBANANA:
 	case SEMICOLON:
@@ -457,10 +464,11 @@ void Parser::CaseList()
 
 void Parser::ForAssign()
 {
+    Expr forAssignExpr;
 	Variable();
 	// code.ProcessVar();
 	Match(ASSIGN_OP);
-	Expression();
+	Expression(forAssignExpr);
 	// code.ForAssign();
 }
 
@@ -482,7 +490,8 @@ void Parser::ElseClause()
 
 void Parser::Condition()
 {
-	Expression();
+    Expr condExpr;
+	Expression(condExpr);
 	CondTail();
 	// code.SetCondition();
 }
@@ -497,9 +506,10 @@ void Parser::VarDecs()
 
 void Parser::SelectStmt()
 {
+    Expr selectExpr;
 	Match(SELECT_SYM);
 	Match(LBANANA);
-	Expression();
+	Expression(selectExpr);
 	Match(RBANANA);
 	// code.SelectBegin();
 	CaseList();
@@ -569,10 +579,10 @@ void Parser::IfStmt()
 
 void Parser::ItemListTail()
 {
-	switch (NextToken())
+    Expr shoutExpr;
+    switch (NextToken())
 	{
-	case COMMA:
-        Expr shoutExpr;
+        case COMMA:
 		Match(COMMA);
 		Expression(shoutExpr);
         code.Shout(shoutExpr);
@@ -595,11 +605,12 @@ void Parser::ItemList()
 
 void Parser::VariableTail()
 {
+    Expr varTail;
 	switch (NextToken())
 	{
 	case LSTAPLE:
 		Match(LSTAPLE);
-		Expression();
+		Expression(varTail);
 		Match(RSTAPLE);
 		break;
 	case RSTAPLE:
@@ -653,7 +664,8 @@ void Parser::VarList()
 
 void Parser::InitList()
 {
-	Expression();
+    Expr initListExpr;
+	Expression(initListExpr);
 	InitTail();
 }
 
@@ -665,6 +677,7 @@ void Parser::Expression(Expr& expr)
 
 void Parser::AssignTail()
 {
+    Expr assignTailExpr;
 	switch (NextToken())
 	{
 	case FALSE_SYM:
@@ -674,7 +687,7 @@ void Parser::AssignTail()
 	case INT_LIT:
 	case FLOAT_LIT:
 	case CHEESE_LIT:
-		Expression();
+		Expression(assignTailExpr);
 		break;
 	case LMUSTACHE:
 		Match(LMUSTACHE);
@@ -832,9 +845,9 @@ void Parser::StmtList()
 
 void Parser::Program()
 {
-	// code.Start();
+	code.Start();
 	StmtList();
-	// code.Finish();
+	code.Finish();
 }
 
 void Parser::SystemGoal()

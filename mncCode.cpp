@@ -27,7 +27,7 @@ CodeGen::CodeGen()
 void CodeGen::Shout(Expr& shoutStuff) {
     switch (shoutStuff.theType){
         case (intType):
-            Generate("WRI", "#" + to_string(shoutStuff.intVal), "");
+            Generate("WRI       ", "#" + to_string(shoutStuff.intVal), "");
             break;
 
     }
@@ -41,10 +41,10 @@ void CodeGen::DefineVar(const ExprType type){
 void CodeGen::ProcessLit(Expr& expr) {
     switch (expr.theType){
         case (floatType):
-            expr.floatVal = atof(scan.tokenBuffer);
+            expr.floatVal = atof(scan.tokenBuffer.data());
             break;
         case (intType):
-            expr.theType = atoi(scan.tokenBuffer);
+            expr.intVal = atoi(scan.tokenBuffer.data());
             break;
         case (cheeseType):
             expr.cheeseVal = scan.stringBuffer;
