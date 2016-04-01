@@ -16,7 +16,7 @@ struct Expr {
     float floatVal;
     bool boolVal;
     string cheeseVal;
-    string ID
+    string ID;
 };
 
 class CodeGen{

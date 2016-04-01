@@ -101,13 +101,14 @@ void Parser::DecTail()
 
 void Parser::Declaration()
 {
+	ExprType type;
 	switch (NextToken())
 	{
 	case BOOL_SYM:
 	case CHEESE_SYM:
 	case FLOAT_SYM:
 	case INT_SYM:
-		Type();
+		Type(type);
 		Match(COLON);
 		VarDecList();
 		Match(SEMICOLON);
@@ -117,7 +118,7 @@ void Parser::Declaration()
 		Match(LSTAPLE);
 		Match(INT_LIT);
 		Match(RSTAPLE);
-		Type();
+		Type(type);
 		VarDecList();
 		Match(SEMICOLON);
 		break;
@@ -173,20 +174,24 @@ void Parser::CheeseType()
 	CheeseTypeTail();
 }
 
-void Parser::Type()
+void Parser::Type(ExprType& type)
 {
 	switch (NextToken())
 	{
 	case BOOL_SYM:
+        type = boolType;
 		Match(BOOL_SYM);
 		break;
 	case INT_SYM:
+        type = intType;
 		Match(INT_SYM);
 		break;
 	case FLOAT_SYM:
+        type = floatType;
 		Match(FLOAT_SYM);
 		break;
 	case CHEESE_SYM:
+        type = cheeseType;
 		CheeseType();
 		break;
 	default:
