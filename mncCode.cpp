@@ -7,6 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
+#include <vector>
 
 extern Scanner scan;
 extern ifstream sourceFile;
@@ -22,10 +23,7 @@ CodeGen::CodeGen()
     maxTemp = 0;
 }
 
-/// initializes maps for IntIDS, FloatIDs, and CHesseIDS to their value
-static map<string,int> IntTable;
-static map<string,float> FloatTable;
-static map<string,string> CheeseTable;
+
 
 void CodeGen::Shout(Expr& shoutStuff) {
     switch (shoutStuff.theType){
@@ -39,14 +37,19 @@ void CodeGen::Shout(Expr& shoutStuff) {
 void CodeGen::DefineVar(const ExprType type){
     switch (type){
         case (intType):
-            IntTable [scan.tokenBuffer.data()] = null;
+            intSymbolTable.push_back(scan.tokenBuffer.data());
             break;
         case (floatType):
-            FloatTable [scan.tokenBuffer.data()] = null;
+            floatSymbolTable.push_back(scan.tokenBuffer.data());
             break;
         case (cheeseType):
-            CheeseTable [scan.tokenBuffer.data()] = null;
+            CheeseSymbolTable.push_back(scan.tokenBuffer.data());
+            Cheeselength [scan.tokenBuffer.data()] = null;
             break;
+        case (boolType):
+            boolSymbolTable.push_back(scan.tokenBuffer.data());
+            break;
+        case (Hip):
     }
 
 
