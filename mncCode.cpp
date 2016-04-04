@@ -22,7 +22,10 @@ CodeGen::CodeGen()
     maxTemp = 0;
 }
 
-
+/// initializes maps for IntIDS, FloatIDs, and CHesseIDS to their value
+static map<string,int> IntTable;
+static map<string,float> FloatTable;
+static map<string,string> CheeseTable;
 
 void CodeGen::Shout(Expr& shoutStuff) {
     switch (shoutStuff.theType){
@@ -32,8 +35,19 @@ void CodeGen::Shout(Expr& shoutStuff) {
 
     }
 }
+///sets up the ID in there correct directory
 void CodeGen::DefineVar(const ExprType type){
-    string ASMDecString = "";
+    switch (type){
+        case (intType):
+            IntTable [scan.tokenBuffer.data()] = null;
+            break;
+        case (floatType):
+            FloatTable [scan.tokenBuffer.data()] = null;
+            break;
+        case (cheeseType):
+            CheeseTable [scan.tokenBuffer.data()] = null;
+            break;
+    }
 
 
 }

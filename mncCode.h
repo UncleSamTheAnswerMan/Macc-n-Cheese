@@ -6,6 +6,7 @@
 #define MACC_N_CHEESE_MNCCODE_H
 #include <string>
 #include <vector>
+#include <map>
 
 using namespace std;
 
