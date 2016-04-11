@@ -1,0 +1,15 @@
+1. Remake decs & defineVar
+2. Listen needs to use symbolTableEntry
+3. Function for setting up relative addressing for symbol table
+4. Shout needs to be updated to be able to shout floats, cheeses and hip hips
+5. Need a function for creating temporary variables for results of expressions
+   and float lits, cheese lits and bool lits
+6. Make shout work for variables
+7. Assignment operations
+8. Arithmetic expression evaluation
+9. Set up initial values as found in reference doc
+
+Note: Make initializations and assignments the same code block so we
+don't have to keep track of if it is the first time something
+has been assigned or not.
+
