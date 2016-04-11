@@ -21,6 +21,7 @@ extern ofstream outFile, listFile;
 CodeGen::CodeGen()
 {
     maxTemp = 0;
+    floatTempCount = 0;
 }
 
 
@@ -30,27 +31,40 @@ void CodeGen::Shout(Expr& shoutStuff) {
         case (intType):
             Generate("WRI       ", "#" + to_string(shoutStuff.intVal), "");
             break;
+        case (floatType):
+
+            Generate("WRF       ", "#" + to_string(shoutStuff.floatVal), "");
+            break;
+        case (boolType):
+            //Generate(("WRI      ", ));
+            break;
+        case (cheeseType):
+
+            break;
+        case (IDType):
+
+            break;
 
     }
 }
 ///sets up the ID in there correct directory
 void CodeGen::DefineVar(const ExprType type){
-    switch (type){
-        case (intType):
-            intSymbolTable.push_back(scan.tokenBuffer.data());
-            break;
-        case (floatType):
-            floatSymbolTable.push_back(scan.tokenBuffer.data());
-            break;
-        case (cheeseType):
-            CheeseSymbolTable.push_back(scan.tokenBuffer.data());
-            Cheeselength [scan.tokenBuffer.data()] = null;
-            break;
-        case (boolType):
-            boolSymbolTable.push_back(scan.tokenBuffer.data());
-            break;
-        case (Hip):
-    }
+//    switch (type){
+//        case (intType):
+//            intSymbolTable.push_back(scan.tokenBuffer.data());
+//            break;
+//        case (floatType):
+//            floatSymbolTable.push_back(scan.tokenBuffer.data());
+//            break;
+//        case (cheeseType):
+//            CheeseSymbolTable.push_back(scan.tokenBuffer.data());
+//            Cheeselength [scan.tokenBuffer.data()] = null;
+//            break;
+//        case (boolType):
+//            boolSymbolTable.push_back(scan.tokenBuffer.data());
+//            break;
+//        case (Hip):
+//    }
 
 
 }
@@ -58,7 +72,7 @@ void CodeGen::DefineVar(const ExprType type){
 void CodeGen::ProcessLit(Expr& expr) {
     switch (expr.theType){
         case (floatType):
-            expr.floatVal = atof(scan.tokenBuffer.data());
+            expr.floatVal = (float) atof(scan.tokenBuffer.data());
             break;
         case (intType):
             expr.intVal = atoi(scan.tokenBuffer.data());

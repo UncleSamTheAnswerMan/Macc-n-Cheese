@@ -7,10 +7,10 @@
 #include <string>
 #include <vector>
 #include <map>
-
+#include "symbolTableEntries.h"
 using namespace std;
 
-enum ExprType {floatType, intType, cheeseType, boolType, IDType, hiphipType};
+enum ExprType {floatType, intType, cheeseType, boolType, IDType, TempType, hiphipType};
 
 struct Expr {
     ExprType theType;
@@ -23,6 +23,7 @@ struct Expr {
 
 class CodeGen{
 public:
+    static int floatTempCount; //count of temporary entries of floats that replace float literals
     void Shout(Expr& shoutStuff);
 
     void ProcessLit(Expr& expr);
@@ -70,22 +71,26 @@ private:
     void IntToAlpha(int val, string& str);
     // Makes a string representation for a positive integer val.
 
-    vector<string> symbolTable;
+    vector<symbolTableEntries> symbolTable;
 
-    vector<string> intSymbolTable;
-    vector<string> floatSymbolTable;
-    vector<string> CheeseSymbolTable;
-    vector<string> boolSymbolTable;
-    vector<string> HipHipSymbolTable;
-
-    ///
-    static map<string,int> Cheeselength;
-    static map<string,int> HipHiplength;
+    //vector<string> intSymbolTable;
+    //vector<string> floatSymbolTable;
+//    vector<string> CheeseSymbolTable;
+//    vector<string> boolSymbolTable;
+//    vector<string> HipHipSymbolTable;
+//
+//    ///
+//    static map<string,int> Cheeselength;
+//    static map<string,int> HipHiplength;
 
 
     int strSum;
 
-    int  maxTemp;     // max temporary allocated so far; initially 0
+    int maxTemp;     // max temporary allocated so far; initially 0
+
+
+    void createSymbolTableEntry(Expr& expr);//creates a symbolTableEntries object and places into symbolTable
+
 
     //void CheckId(const string & s);
     // Declares s as a new variable and enters it into the symbol table when s
