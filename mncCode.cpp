@@ -44,11 +44,13 @@ void CodeGen::Shout(Expr& shoutStuff) {
         case (IDType):
 
             break;
+        default:
+            break;
 
     }
 }
 ///sets up the ID in there correct directory
-void CodeGen::DefineVar(const ExprType type){
+void CodeGen::DefineVar(const ExprType type) {
 //    switch (type){
 //        case (intType):
 //            intSymbolTable.push_back(scan.tokenBuffer.data());
@@ -65,6 +67,7 @@ void CodeGen::DefineVar(const ExprType type){
 //            break;
 //        case (Hip):
 //    }
+}
 
 void CodeGen::CheckId(const string &s) {
     if (!LookUp(s))
