@@ -48,8 +48,38 @@ void CodeGen::DefineVar(const ExprType type){
             CheeseTable [scan.tokenBuffer.data()] = null;
             break;
     }
+}
 
+void CodeGen::CheckId(const string &s) {
+    if (!LookUp(s))
+        Enter(s);
+}
 
+void CodeGen::Enter(const string &s) {
+    symbolTable.push_back(s);
+}
+
+void CodeGen::ExtractExpr(const Expr &e, string &s) {
+    string t;
+    int k, n;
+
+    switch(e.theType)
+    {
+        case IDType:
+        case
+    }
+}
+void CodeGen::Listen(const Expr &InExpr) {
+    string s;
+
+    ExtractExpr(InExpr, s);
+    Generate("RDI       ", s, "");
+}
+
+void CodeGen::ProcessVar(Expr &e) {
+    CheckId(scan.tokenBuffer);
+    e.theType = IDType;
+    e.ID = scan.tokenBuffer;
 }
 
 void CodeGen::ProcessLit(Expr& expr) {
@@ -64,6 +94,13 @@ void CodeGen::ProcessLit(Expr& expr) {
             expr.cheeseVal = scan.stringBuffer;
             break;
     }
+}
+
+bool CodeGen::LookUp(const string &s) {
+    for (unsigned i = 0; i < symbolTable.size(); i++)
+    {if (symbolTable[i] == s)
+            return true;
+        return false;}
 }
 
 void CodeGen::IntToAlpha(int val, string& str)
