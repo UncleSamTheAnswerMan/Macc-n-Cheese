@@ -47,8 +47,8 @@ public:
     void NewLine();
     // Produces the assembly code for starting a new output line.
 
-    //void ProcessId(ExprRec& e);
-    // Declares the identifier in the token buffer and builds a
+    void ProcessVar(Expr& e);
+    // Declares the variable in the token buffer and builds a
     // corresponding semantic record e.
 
     //void ProcessLiteral(ExprRec& e);
@@ -59,8 +59,8 @@ public:
     // Produces an operator descriptor O for the operator in the token
     // buffer.
 
-    //void ReadId(const ExprRec & InVar);
-    // Produces the assembly code for reading a value for InVar.
+    void Listen(const Expr& InExpr);
+    //Produces the assembly code for reading a value for InExpr.
 
     void Start();
     // Initializes the compiler.
@@ -92,14 +92,14 @@ private:
     void createSymbolTableEntry(Expr& expr);//creates a symbolTableEntries object and places into symbolTable
 
 
-    //void CheckId(const string & s);
-    // Declares s as a new variable and enters it into the symbol table when s
-    // is not already in the symbol table.
+    void CheckId(const string & s);
+//     Declares s as a new variable and enters it into the symbol table when s
+//     is not already in the symbol table.
 
-    //void Enter(const string & s);
+    void Enter(const string & s);
     // Enters s unconditionally into the symbol table.
 
-    //void ExtractExpr(const ExprRec & e, string& s);
+    void ExtractExpr(const Expr & e, string& s);
     // Returns an operand representation s for the expression e.
 
     //string ExtractOp(const OpRec& o);
@@ -112,7 +112,7 @@ private:
     //string GetTemp();
     // Creates a temporary variable and returns its name.
 
-    //bool LookUp(const string &s);
+    bool LookUp(const string &s);
     // Returns true if s is in the symbol table; otherwise,
     // false is returned.
 
