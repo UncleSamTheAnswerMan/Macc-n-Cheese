@@ -10,7 +10,7 @@
 
 using namespace std;
 
-enum ExprType {floatType, intType, cheeseType, boolType, IDType};
+enum ExprType {floatType, intType, cheeseType, boolType, IDType, hiphipType};
 
 struct Expr {
     ExprType theType;
@@ -71,7 +71,17 @@ private:
     // Makes a string representation for a positive integer val.
 
     vector<string> symbolTable;
-    vector<string> stringTable;
+
+    vector<string> intSymbolTable;
+    vector<string> floatSymbolTable;
+    vector<string> CheeseSymbolTable;
+    vector<string> boolSymbolTable;
+    vector<string> HipHipSymbolTable;
+
+    ///
+    static map<string,int> Cheeselength;
+    static map<string,int> HipHiplength;
+
 
     int strSum;
 
