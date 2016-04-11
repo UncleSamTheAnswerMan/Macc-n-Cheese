@@ -10,9 +10,9 @@
 #include <string>
 using namespace std;
 
-#include "_____.h" // scanner class definition
+#include "mncScan.h" // scanner class definition
 
-#include "_____.h" // code generator class definition
+#include "mncCode.h" // code generator class definition
 
 class Parser
 {
@@ -37,15 +37,15 @@ private:
 
 	void VarDecTail();
 
-	void VarDecList(const ExprType type);
+	void VarDecList(ExprType& type);
 
-	void DecTail(const ExprType type);
+	void DecTail();
 
 	void Declaration();
 
 	void DecList();
 
-	void BoolLit();
+	void BoolLit(Expr& expr);
 
 	void CheeseTypeTail();
 
@@ -53,19 +53,19 @@ private:
 
 	void Type(ExprType& type);
 
-	void Literal();
+	void Literal(Expr& expr);
 
 	void MultOp();
 
 	void FactorTail();
 
-	void Primary();
+	void Primary(Expr& expr);
 
 	void AddOp();
 
 	void ExprTail();
 
-	void Factor();
+	void Factor(Expr& expr);
 
 	void RelOp();
 
@@ -111,7 +111,7 @@ private:
 
 	void InitList();
 
-	void Expression();
+	void Expression(Expr& expr);
 
 	void AssignTail();
 
