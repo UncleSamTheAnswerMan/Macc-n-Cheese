@@ -1,6 +1,10 @@
 1. Remake decs & defineVar
 2. Listen needs to use symbolTableEntry
-3. Function for setting up relative addressing for symbol table
+
+******************************************************************************
+3. Function for setting up relative addressing for symbol table -> done probs
+******************************************************************************
+
 4. Shout needs to be updated to be able to shout floats, cheeses and hip hips
 5. Need a function for creating temporary variables for results of expressions
    and float lits, cheese lits and bool lits
