@@ -8,18 +8,19 @@
 #include <string>
 #include <vector>
 using namespace std;
+enum DataType{boolean, cheese, integer, floating};
 
 class symbolTableEntries {
+
 public:
 
     symbolTableEntries();
-
-    enum DataType{boolean, cheese, integer, floating};
     string getName();
     DataType getDataType();
     int getRelAddress();
     bool getHipHip();
     int getNumComponents();
+    int getStrSize();
 
     vector<string> getInitValues();
     void setName(string n);
@@ -27,6 +28,7 @@ public:
     void setRelAddress(int r);
     void setHipHip(bool h);
     void setNumComponents(int n);
+    void setStrSize(int s);
 
 
 
@@ -37,6 +39,7 @@ private:
     int relativeAddress;
     bool hiphip;
     int numComponents;
+    int strSize;
     vector<string> initValues;
 };
 

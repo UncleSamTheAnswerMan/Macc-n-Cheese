@@ -17,7 +17,7 @@ string symbolTableEntries::getName() {
     return name;
 }
 
-symbolTableEntries::DataType symbolTableEntries::getDataType() {
+DataType symbolTableEntries::getDataType() {
     return dataType;
 }
 
@@ -35,6 +35,10 @@ int symbolTableEntries::getNumComponents() {
 
 vector<string> symbolTableEntries::getInitValues() {
     return initValues;
+}
+
+int symbolTableEntries::getStrSize() {
+    return strSize;
 }
 
 void symbolTableEntries::setName(string n) {
@@ -59,4 +63,8 @@ void symbolTableEntries::setInitVals(vector<string> i) {
 
 void symbolTableEntries::setRelAddress(int r) {
     relativeAddress = r;
+}
+
+void symbolTableEntries::setStrSize(int s) {
+    strSize = s;
 }
