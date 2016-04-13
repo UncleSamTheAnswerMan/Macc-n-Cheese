@@ -162,6 +162,49 @@ void CodeGen::Generate(const string & s1, const string & s2, const string & s3)
     outFile << endl;
 }
 
+int CodeGen::calcNewRelativeAddress() {
+    int relAddress = 0;
+    vector<symbolTableEntries>::iterator iter;
+    for (iter = symbolTable.begin(); iter < symbolTable.end(); ++iter){
+        switch(iter->getDataType()){
+            case (boolean):
+            case (integer):
+                if (iter->getHipHip()){
+                    relAddress += (iter->getNumComponents() *2);
+                } else {
+                    relAddress+=2;
+                }
+                break;
+            case (floating):
+                if (iter->getHipHip()){
+                    relAddress += (iter->getNumComponents() *4);
+                } else {
+                    relAddress+=4;
+                }
+                break;
+            case (cheese):
+                if (iter->getHipHip()) {
+                    int size = iter->getStrSize();
+                    if (size % 2 == 1) {
+                        relAddress += (iter->getNumComponents() * (size + 1));
+                    } else {
+                        relAddress += (iter->getNumComponents() * (size + 2));
+                    }
+                } else {
+                    int size = iter->getStrSize();
+                    if (size % 2 == 1) {
+                        relAddress += size + 1;
+                    } else {
+                        relAddress += size + 2;
+                    }
+                }
+                break;
+        }
+    }
+
+    return relAddress;
+}
+
 
 // ******************************
 // ** Public Member Functions  **

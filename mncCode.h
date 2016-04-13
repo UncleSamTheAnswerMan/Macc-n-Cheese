@@ -88,6 +88,8 @@ private:
 
     int maxTemp;     // max temporary allocated so far; initially 0
 
+    int calcNewRelativeAddress();
+
 
     void createSymbolTableEntry(Expr& expr);//creates a symbolTableEntries object and places into symbolTable
 
