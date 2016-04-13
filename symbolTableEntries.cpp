@@ -4,6 +4,15 @@
 
 #include "symbolTableEntries.h"
 
+void symbolTableEntries::symbolTableEntries() {
+    name = "";
+    dataType = NULL;
+    relativeAddress = 0;
+    hiphip = false;
+    numComponents = 0;
+    initValues = vector<string>();
+}
+
 string symbolTableEntries::getName() {
     return name;
 }
@@ -46,4 +55,8 @@ void symbolTableEntries::setNumComponents(int n) {
 
 void symbolTableEntries::setInitVals(vector<string> i) {
     initValues = i;
+}
+
+void symbolTableEntries::setRelAddress(int r) {
+    relativeAddress = r;
 }

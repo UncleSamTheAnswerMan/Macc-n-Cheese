@@ -12,25 +12,25 @@ using namespace std;
 class symbolTableEntries {
 public:
 
-    enum DataType{boolean, cheese, integer, floating};
+    symbolTableEntries();
 
+    enum DataType{boolean, cheese, integer, floating};
     string getName();
     DataType getDataType();
     int getRelAddress();
     bool getHipHip();
     int getNumComponents();
-    vector<string> getInitValues();
 
+    vector<string> getInitValues();
     void setName(string n);
     void setDataType(DataType d);
     void setRelAddress(int r);
     void setHipHip(bool h);
     void setNumComponents(int n);
+
+
+
     void setInitVals(vector<string> i);
-
-
-
-    symbolTableEntries();
 private:
     string name;
     DataType dataType;
