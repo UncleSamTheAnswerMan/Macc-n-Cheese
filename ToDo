@@ -8,10 +8,14 @@
 4. Shout needs to be updated to be able to shout floats, cheeses and hip hips
 5. Need a function for creating temporary variables for results of expressions
    and float lits, cheese lits and bool lits
-6. Make shout work for variables
+6. Make shout work for variables, expressions and cheeses
 7. Assignment operations
 8. Arithmetic expression evaluation
 9. Set up initial values as found in reference doc
+10. Hiphip/cheese declarations and initializations
+11. Boolean expression evaluation
+12. If statements (with nesting)
+13. Select...case statement implementation (with nesting)
 
 Note: Make initializations and assignments the same code block so we
 don't have to keep track of if it is the first time something
