@@ -15,6 +15,7 @@ class symbolTableEntries {
 public:
 
     symbolTableEntries();
+    symbolTableEntries(string incomingName, DataType type, int addr, bool hip, int numComp, int strSze);
     string getName();
     DataType getDataType();
     int getRelAddress();

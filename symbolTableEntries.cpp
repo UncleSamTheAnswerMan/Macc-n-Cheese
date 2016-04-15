@@ -4,13 +4,18 @@
 
 #include "symbolTableEntries.h"
 
-void symbolTableEntries::symbolTableEntries() {
+symbolTableEntries::symbolTableEntries() {
     name = "";
     dataType = NULL;
     relativeAddress = 0;
     hiphip = false;
     numComponents = 0;
     initValues = vector<string>();
+}
+
+symbolTableEntries::symbolTableEntries(string incomingName, DataType type, int addr, bool hip, int numComp, int strSze) :
+name(incomingName), dataType(type), relativeAddress(addr), hiphip(hip), numComponents(numComp), strSize(strSze) {
+
 }
 
 string symbolTableEntries::getName() {
