@@ -18,31 +18,31 @@ name(incomingName), dataType(type), relativeAddress(addr), hiphip(hip), numCompo
 
 }
 
-string symbolTableEntries::getName() {
+string symbolTableEntries::getName() const {
     return name;
 }
 
-DataType symbolTableEntries::getDataType() {
+DataType symbolTableEntries::getDataType() const {
     return dataType;
 }
 
-int symbolTableEntries::getRelAddress() {
+int symbolTableEntries::getRelAddress() const {
     return relativeAddress;
 }
 
-bool symbolTableEntries::getHipHip() {
+bool symbolTableEntries::getHipHip() const {
     return hiphip;
 }
 
-int symbolTableEntries::getNumComponents() {
+int symbolTableEntries::getNumComponents() const {
     return numComponents;
 }
 
-vector<string> symbolTableEntries::getInitValues() {
+vector<string> symbolTableEntries::getInitValues() const {
     return initValues;
 }
 
-int symbolTableEntries::getStrSize() {
+int symbolTableEntries::getStrSize() const {
     return strSize;
 }
 

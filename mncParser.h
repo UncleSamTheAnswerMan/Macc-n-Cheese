@@ -37,7 +37,7 @@ private:
 
 	void VarDecTail();
 
-	void VarDecList(ExprType& type);
+	void VarDecList(ExprType& type, bool HipOrNah, int HipHip_Size);
 
 	void DecTail();
 
@@ -47,11 +47,11 @@ private:
 
 	void BoolLit(Expr& expr);
 
-	void CheeseTypeTail();
+	void CheeseTypeTail(int& Cheese_size);
 
-	void CheeseType();
+	void CheeseType(int& Cheese_size);
 
-	void Type(ExprType& type);
+	void Type(ExprType& type, int& Cheese_size);
 
 	void Literal(Expr& expr);
 

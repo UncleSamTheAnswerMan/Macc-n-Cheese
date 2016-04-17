@@ -183,7 +183,7 @@ void CodeGen::ProcessLit(Expr& expr) {
     }
 }
 
-bool CodeGen::LookUp(symbolTableEntries &s) {
+bool CodeGen::LookUp(const symbolTableEntries &s) {
     for (unsigned i = 0; i < symbolTable.size(); i++)
     {
         if (symbolTable[i].getName() == s.getName()){

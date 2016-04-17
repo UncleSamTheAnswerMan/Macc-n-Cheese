@@ -116,7 +116,7 @@ private:
     //string GetTemp();
     // Creates a temporary variable and returns its name.
 
-    bool LookUp(symbolTableEntries &s);
+    bool LookUp(const symbolTableEntries &s);
     // Returns true if s is in the symbol table; otherwise,
     // false is returned.
 

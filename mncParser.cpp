@@ -76,10 +76,10 @@ void Parser::VarDecTail()
 	}
 }
 
-void Parser::VarDecList(ExprType& type)
+void Parser::VarDecList(ExprType& type, bool HipOrNah, int HipHip_Size)
 {
 	Match(ID);
-	code.DefineVar(type);
+	code.DefineVar(type, HipOrNah, HipHip_Size);
 	VarDecTail();
 }
 
@@ -104,6 +104,7 @@ void Parser::DecTail()
 
 void Parser::Declaration()
 {
+	bool HipOrNah = false;
 	ExprType type;
 	switch (NextToken())
 	{
@@ -111,18 +112,22 @@ void Parser::Declaration()
 	case CHEESE_SYM:
 	case FLOAT_SYM:
 	case INT_SYM:
-		Type(type);
+        int Cheese_Size = 0;
+		Type(type, &Cheese_Size);
 		Match(COLON);
-		VarDecList(type);
+		VarDecList(type, HipOrNah, Cheese_Size);
 		Match(SEMICOLON);
 		break;
 	case HIPHIP_SYM:
+		int HipHip_Size;
 		Match(HIPHIP_SYM);
 		Match(LSTAPLE);
 		Match(INT_LIT);
 		Match(RSTAPLE);
+		HipHip_Size = scan.tokenBuffer;
 		Type(type);
-		VarDecList(type);
+		HipOrNah = true;
+		VarDecList(type, HipOrNah, HipHip_Size);
 		Match(SEMICOLON);
 		break;
 	default:
@@ -154,12 +159,14 @@ void Parser::BoolLit(Expr& expr)
 	}
 }
 
-void Parser::CheeseTypeTail()
+void Parser::CheeseTypeTail(int& Cheese_size)
 {
+
 	switch (NextToken())
 	{
 	case LSTAPLE:
 		Match(LSTAPLE);
+		Cheese_size = scan.tokenBuffer;
 		Match(INT_LIT);
 		Match(RSTAPLE);
 		break;
@@ -171,13 +178,13 @@ void Parser::CheeseTypeTail()
 	}
 }
 
-void Parser::CheeseType()
+void Parser::CheeseType(int& Cheese_size)
 {
 	Match(CHEESE_SYM);
-	CheeseTypeTail();
+	CheeseTypeTail(&Cheese_size);
 }
 
-void Parser::Type(ExprType& type)
+void Parser::Type(ExprType& type, int& Cheese_Size)
 {
 	switch (NextToken())
 	{
@@ -195,7 +202,7 @@ void Parser::Type(ExprType& type)
 		break;
 	case CHEESE_SYM:
         type = cheeseType;
-		CheeseType();
+		CheeseType(&Cheese_Size);
 		break;
 	default:
 		SyntaxError(NextToken(), "");
