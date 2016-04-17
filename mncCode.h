@@ -13,7 +13,8 @@ using namespace std;
 enum ExprType {floatType, intType, cheeseType, boolType, IDType, TempType, hiphipType};
 
 struct Expr {
-    ExprType theType;
+    //ExprType theType;
+    int tableEntryIndex;
     int intVal;
     float floatVal;
     bool boolVal;
@@ -23,7 +24,6 @@ struct Expr {
 
 class CodeGen{
 public:
-    static int floatTempCount; //count of temporary entries of floats that replace float literals
     void Shout(Expr& shoutStuff);
 
     void ProcessLit(Expr& expr);
@@ -89,6 +89,8 @@ private:
     int maxTemp;     // max temporary allocated so far; initially 0
 
     int calcNewRelativeAddress();
+
+    string getCurrentTempName();
 
 
     void createSymbolTableEntry(Expr& expr);//creates a symbolTableEntries object and places into symbolTable
