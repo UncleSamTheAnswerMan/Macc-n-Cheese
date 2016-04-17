@@ -13,7 +13,7 @@ using namespace std;
 enum ExprType {floatType, intType, cheeseType, boolType, IDType, TempType, hiphipType};
 
 struct Expr {
-    //ExprType theType;
+    ExprType theType;
     int tableEntryIndex;
     int intVal;
     float floatVal;
@@ -92,6 +92,7 @@ private:
 
     string getCurrentTempName();
 
+    int getSymbolTableIndex(const string s);
 
     void createSymbolTableEntry(Expr& expr);//creates a symbolTableEntries object and places into symbolTable
 
