@@ -25,3 +25,4 @@ Note: Make initializations and assignments the same code block so we
 don't have to keep track of if it is the first time something
 has been assigned or not.
 
+TALK TO MARTY: listen for bools -> how to store them, how to read them  what we want them to do
