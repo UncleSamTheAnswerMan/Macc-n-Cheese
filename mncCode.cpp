@@ -23,7 +23,6 @@ extern ofstream outFile, listFile;
 CodeGen::CodeGen()
 {
     maxTemp = 0;
-    floatTempCount = 0;
 }
 
 
@@ -93,6 +92,16 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah) {
 //    }
 }
 
+string CodeGen::getCurrentTempName() {
+    string value;
+    string temp = "TEMP";
+    IntToAlpha(maxTemp, value);
+    temp += value;
+    maxTemp++;
+    return temp;
+
+}
+
 void CodeGen::CheckId(const string &s) {
     if (!LookUp(s))
         Enter(s);
@@ -126,6 +135,7 @@ void CodeGen::ProcessVar(Expr &e) {
 }
 
 void CodeGen::ProcessLit(Expr& expr) {
+    symbolTableEntries tempEntry;
     switch (expr.theType){
         case (floatType):
             expr.floatVal = (float) atof(scan.tokenBuffer.data());
@@ -142,12 +152,7 @@ void CodeGen::ProcessLit(Expr& expr) {
 bool CodeGen::LookUp(const string &s) {
     for (unsigned i = 0; i < symbolTable.size(); i++)
     {
-        if (symbolTable[i].getName() == s){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return symbolTable[i].getName() == s;
     }
 }
 
