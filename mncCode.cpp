@@ -146,19 +146,19 @@ void CodeGen::ExtractExpr(const Expr &e, string &s) {
 }
 void CodeGen::Listen(const Expr &InExpr) {
     symbolTableEntries entry = symbolTable[InExpr.tableEntryIndex];
-
+    string address = to_string(entry.getRelAddress());
     switch (entry.getDataType()){
         case (floating):
-
+            Generate("RDF    ", address + "(R15)", "");
             break;
         case (integer):
-
+            Generate("RDI    ", address + "(R15)", "");
             break;
         case (cheese):
-
+            Generate("RDST    ", address + "(15)", "");
             break;
         case (boolean):
-
+            //Best way to do this?
             break;
     }
 }
