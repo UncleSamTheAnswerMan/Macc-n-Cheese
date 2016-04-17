@@ -2,12 +2,14 @@
 // Created by heyi1sam on 3/28/16.
 //
 
+#include "symbolTableEntries.h"
 #include "mncCode.h"
 #include "mncScan.h"
 #include <iostream>
 #include <fstream>
 #include <iomanip>
 #include <vector>
+
 
 extern Scanner scan;
 extern ifstream sourceFile;
@@ -50,14 +52,36 @@ void CodeGen::Shout(Expr& shoutStuff) {
     }
 }
 ///sets up the ID in there correct directory
-void CodeGen::DefineVar(const ExprType type) {
-//    switch (type){
-//        case (intType):
-//            intSymbolTable.push_back(scan.tokenBuffer.data());
-//            break;
-//        case (floatType):
-//            floatSymbolTable.push_back(scan.tokenBuffer.data());
-//            break;
+void CodeGen::DefineVar(const ExprType type, bool HipOrNah) {
+    symbolTableEntries temp = symbolTableEntries();
+    temp.setName(scan.tokenBuffer.data());
+    switch (type) {
+        case (intType):
+            if (HipOrNah == true) {
+                temp.setDataType(integer);
+                temp.setRelAddress(calcNewRelativeAddress());
+                temp.setHipHip(true);
+                temp.setNumComponents(//need temp  int var);
+                break;
+            }
+            temp.setDataType(integer);
+            temp.setRelAddress(calcNewRelativeAddress());
+            break;
+        case (floatType):
+            temp.setDataType(floating);
+            temp.setRelAddress(calcNewRelativeAddress());
+            break;
+        case (boolType):
+            temp.setDataType(boolean);
+            temp.setRelAddress(calcNewRelativeAddress());
+            break;
+        case (cheeseType):
+            temp.setDataType(cheese);
+            temp.setRelAddress(calcNewRelativeAddress());
+            break;
+    }
+
+
 //        case (cheeseType):
 //            CheeseSymbolTable.push_back(scan.tokenBuffer.data());
 //            Cheeselength [scan.tokenBuffer.data()] = null;
@@ -117,9 +141,14 @@ void CodeGen::ProcessLit(Expr& expr) {
 
 bool CodeGen::LookUp(const string &s) {
     for (unsigned i = 0; i < symbolTable.size(); i++)
-    {if (symbolTable[i] == s)
+    {
+        if (symbolTable[i].getName() == s){
             return true;
-        return false;}
+        }
+        else{
+            return false;
+        }
+    }
 }
 
 void CodeGen::IntToAlpha(int val, string& str)
