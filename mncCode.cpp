@@ -63,10 +63,12 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
                 temp.setRelAddress(calcNewRelativeAddress());
                 temp.setHipHip(true);
                 temp.setNumComponents(HipHip_Size);
+                CheckId(temp);
                 break;
             }
             temp.setDataType(integer);
             temp.setRelAddress(calcNewRelativeAddress());
+            CheckId(temp);
             break;
         case (floatType):
             ///set up array of floats
@@ -75,10 +77,12 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
                 temp.setRelAddress(calcNewRelativeAddress());
                 temp.setHipHip(true);
                 temp.setNumComponents(HipHip_Size);
+                CheckId(temp);
                 break;
             }
             temp.setDataType(floating);
             temp.setRelAddress(calcNewRelativeAddress());
+            CheckId(temp);
             break;
         case (boolType):
             ///set up array of float
@@ -87,10 +91,12 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
                 temp.setRelAddress(calcNewRelativeAddress());
                 temp.setHipHip(true);
                 temp.setNumComponents(HipHip_Size);
+                CheckId(temp);
                 break;
             }
             temp.setDataType(boolean);
             temp.setRelAddress(calcNewRelativeAddress());
+            CheckId(temp);
             break;
         case (cheeseType):
             if(Cheese_Size > 0){
@@ -102,11 +108,13 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
                 temp.setHipHip(true);
                 temp.setNumComponents(HipHip_Size);
                 temp.setStrSize(Cheese_Size_Temp);
+                CheckId(temp);
                 break;
             }
             temp.setDataType(cheese);
             temp.setRelAddress(calcNewRelativeAddress());
             temp.setStrSize(Cheese_Size_Temp);
+            CheckId(temp);
             break;
     }
 }
