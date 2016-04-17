@@ -65,7 +65,7 @@ public:
     void Start();
     // Initializes the compiler.
 
-    void DefineVar(const ExprType type);
+    void DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int Cheese_Size);
 
 private:
     void IntToAlpha(int val, string& str);
@@ -96,11 +96,11 @@ private:
     void createSymbolTableEntry(Expr& expr);//creates a symbolTableEntries object and places into symbolTable
 
 
-    void CheckId(const string & s);
+    void CheckId(const symbolTableEntries & s);
 //     Declares s as a new variable and enters it into the symbol table when s
 //     is not already in the symbol table.
 
-    void Enter(const string & s);
+    void Enter(const symbolTableEntries & s);
     // Enters s unconditionally into the symbol table.
 
     void ExtractExpr(const Expr & e, string& s);
@@ -116,7 +116,7 @@ private:
     //string GetTemp();
     // Creates a temporary variable and returns its name.
 
-    bool LookUp(const string &s);
+    bool LookUp(symbolTableEntries &s);
     // Returns true if s is in the symbol table; otherwise,
     // false is returned.
 
