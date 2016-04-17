@@ -6,8 +6,12 @@
 ******************************************************************************
 
 4. Shout needs to be updated to be able to shout floats, cheeses and hip hips
-5. Need a function for creating temporary variables for results of expressions
+
+******************************************************************************
+5. Need a function for creating temporary variables for results of expressions -> done
    and float lits, cheese lits and bool lits
+******************************************************************************
+
 6. Make shout work for variables, expressions and cheeses
 7. Assignment operations
 8. Arithmetic expression evaluation
