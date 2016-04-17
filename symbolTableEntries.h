@@ -16,12 +16,12 @@ public:
 
     symbolTableEntries();
     symbolTableEntries(string incomingName, DataType type, int addr, bool hip, int numComp, int strSze);
-    string getName();
-    DataType getDataType();
-    int getRelAddress();
-    bool getHipHip();
-    int getNumComponents();
-    int getStrSize();
+    string getName() const;
+    DataType getDataType() const;
+    int getRelAddress() const;
+    bool getHipHip() const;
+    int getNumComponents() const;
+    int getStrSize() const;
 
     vector<string> getInitValues();
     void setName(string n);
