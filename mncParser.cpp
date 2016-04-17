@@ -282,7 +282,7 @@ void Parser::FactorTail()
 	}
 }
 
-void Parser::Primary(Expr& expr)
+void Parser::primary(Expr& expr)
 {
     Expr primaryExpr;
 	switch (NextToken())
@@ -297,7 +297,7 @@ void Parser::Primary(Expr& expr)
 		break;
 	case ID:
 		Variable();
-		// code.ProcessVar();
+		code.ProcessVar(primaryExpr);
 		break;
 	case LBANANA:
 		Match(LBANANA);
@@ -650,7 +650,7 @@ void Parser::VarListTail()
 	case COMMA:
 		Match(COMMA);
 		Variable();
-		// code.ProcessVar();
+		//code.ProcessVar();
 		// code.Listen();
 		VarListTail();
 		break;
@@ -682,9 +682,8 @@ void Parser::Expression(Expr& expr)
 	ExprTail();
 }
 
-void Parser::AssignTail()
+void Parser::AssignTail(Expr & assignTailExpr)
 {
-    Expr assignTailExpr;
 	switch (NextToken())
 	{
 	case FALSE_SYM:
@@ -736,11 +735,13 @@ void Parser::ListenStmt()
 
 void Parser::AssignStmt()
 {
+    Expr AssignExpr;
+    Expr assignTailExpr;
 	Variable();
-	// code.ProcessVar();
+	code.ProcessVar(AssignExpr);
 	Match(ASSIGN_OP);
-	AssignTail();
-	// code.Assign();
+	AssignTail(AssignTailExpr);
+	code.Assign(AssignExpr, assignTailExpr);
 	Match(SEMICOLON);
 }
 

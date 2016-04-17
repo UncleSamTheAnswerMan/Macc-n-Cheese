@@ -123,6 +123,9 @@ private:
 
     //int strSize(const string findSize);//returns size of string in words, including null bytes
 
+    void Assign(Expr &Assign, Expr &AssignTail);
+    ///Takes the variable and the value it is assigned and generates the code for assembly.
+
 };
 
 #endif //MACC_N_CHEESE_MNCCODE_H
