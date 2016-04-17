@@ -7,7 +7,7 @@
 ** and float lits, cheese lits and bool lits
 
 6. Make shout work for variables, expressions and cheeses
-7. Assignment operations
+**7. Assignment operations
 8. Arithmetic expression evaluation
 9. Set up initial values as found in reference doc
 10. Hiphip/cheese declarations and initializations
