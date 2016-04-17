@@ -51,45 +51,64 @@ void CodeGen::Shout(Expr& shoutStuff) {
     }
 }
 ///sets up the ID in there correct directory
-void CodeGen::DefineVar(const ExprType type, bool HipOrNah) {
+void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int Cheese_Size) {
     symbolTableEntries temp = symbolTableEntries();
     temp.setName(scan.tokenBuffer.data());
+    int Cheese_Size_Temp = 1024;
     switch (type) {
         case (intType):
+            ///set up array of ints
             if (HipOrNah == true) {
                 temp.setDataType(integer);
                 temp.setRelAddress(calcNewRelativeAddress());
                 temp.setHipHip(true);
-                temp.setNumComponents(//need temp  int var);
+                temp.setNumComponents(HipHip_Size);
                 break;
             }
             temp.setDataType(integer);
             temp.setRelAddress(calcNewRelativeAddress());
             break;
         case (floatType):
+            ///set up array of floats
+            if (HipOrNah == true) {
+                temp.setDataType(floating);
+                temp.setRelAddress(calcNewRelativeAddress());
+                temp.setHipHip(true);
+                temp.setNumComponents(HipHip_Size);
+                break;
+            }
             temp.setDataType(floating);
             temp.setRelAddress(calcNewRelativeAddress());
             break;
         case (boolType):
+            ///set up array of float
+            if (HipOrNah == true) {
+                temp.setDataType(boolean);
+                temp.setRelAddress(calcNewRelativeAddress());
+                temp.setHipHip(true);
+                temp.setNumComponents(HipHip_Size);
+                break;
+            }
             temp.setDataType(boolean);
             temp.setRelAddress(calcNewRelativeAddress());
             break;
         case (cheeseType):
+            if(Cheese_Size > 0){
+                Cheese_Size_Temp = Cheese_Size;
+            }
+            if (HipOrNah == true){
+                temp.setDataType(cheese);
+                temp.setRelAddress(calcNewRelativeAddress());
+                temp.setHipHip(true);
+                temp.setNumComponents(HipHip_Size);
+                temp.setStrSize(Cheese_Size_Temp);
+                break;
+            }
             temp.setDataType(cheese);
             temp.setRelAddress(calcNewRelativeAddress());
+            temp.setStrSize(Cheese_Size_Temp);
             break;
     }
-
-
-//        case (cheeseType):
-//            CheeseSymbolTable.push_back(scan.tokenBuffer.data());
-//            Cheeselength [scan.tokenBuffer.data()] = null;
-//            break;
-//        case (boolType):
-//            boolSymbolTable.push_back(scan.tokenBuffer.data());
-//            break;
-//        case (Hip):
-//    }
 }
 
 string CodeGen::getCurrentTempName() {
@@ -102,12 +121,12 @@ string CodeGen::getCurrentTempName() {
 
 }
 
-void CodeGen::CheckId(const string &s) {
+void CodeGen::CheckId(const symbolTableEntries &s) {
     if (!LookUp(s))
         Enter(s);
 }
 
-void CodeGen::Enter(const string &s) {
+void CodeGen::Enter(const symbolTableEntries &s) {
     symbolTable.push_back(s);
 }
 
@@ -164,10 +183,10 @@ void CodeGen::ProcessLit(Expr& expr) {
     }
 }
 
-bool CodeGen::LookUp(const string &s) {
+bool CodeGen::LookUp(symbolTableEntries &s) {
     for (unsigned i = 0; i < symbolTable.size(); i++)
     {
-        if (symbolTable[i].getName() == s){
+        if (symbolTable[i].getName() == s.getName()){
             return true;
         }
     }
