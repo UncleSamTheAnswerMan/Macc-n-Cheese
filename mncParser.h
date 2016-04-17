@@ -137,6 +137,8 @@ private:
 
 	void Program();
 
+	void SyntaxError();
+
 }; // end of Parser class
 
 #endif

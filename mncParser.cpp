@@ -855,3 +855,17 @@ void Parser::SystemGoal()
 	Program();
 	Match(EOF_SYM);
 }
+
+void Parser::SyntaxError(Token t)
+{
+	cout << " *** Syntax Error Detected " << int(t) << ' '
+	<< int(savedToken);
+	listFile << " *** Syntax Error Detected " << int(t) << ' '
+	<< int(savedToken);
+	sourceFile.close();
+	listFile.close();
+	outFile.close();
+	cin.ignore(256, '\n');
+	cin.get();
+	exit(1);  // error termination
+}
