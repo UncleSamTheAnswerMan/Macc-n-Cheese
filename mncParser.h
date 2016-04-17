@@ -113,7 +113,7 @@ private:
 
 	void Expression(Expr& expr);
 
-	void AssignTail();
+	void AssignTail(Expr & assignTailExpr);
 
 	void Variable();
 
