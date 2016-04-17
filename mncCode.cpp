@@ -129,9 +129,16 @@ void CodeGen::Listen(const Expr &InExpr) {
 }
 
 void CodeGen::ProcessVar(Expr &e) {
-    CheckId(scan.tokenBuffer);
-    e.theType = IDType;
-    e.ID = scan.tokenBuffer;
+    string varName = scan.tokenBuffer;
+    int index = getSymbolTableIndex(varName);
+    if (index >= 0){
+        e.ID = varName;
+        e.tableEntryIndex = index;
+    } else {
+
+    }
+
+
 }
 
 void CodeGen::ProcessLit(Expr& expr) {
@@ -152,8 +159,21 @@ void CodeGen::ProcessLit(Expr& expr) {
 bool CodeGen::LookUp(const string &s) {
     for (unsigned i = 0; i < symbolTable.size(); i++)
     {
-        return symbolTable[i].getName() == s;
+        if (symbolTable[i].getName() == s){
+            return true;
+        }
     }
+    return false;
+}
+
+int CodeGen::getSymbolTableIndex(const string s) {
+    for (unsigned i = 0; i < symbolTable.size(); i++)
+    {
+        if (symbolTable[i].getName() == s){
+            return i;
+        }
+    }
+    return -1;
 }
 
 void CodeGen::IntToAlpha(int val, string& str)
