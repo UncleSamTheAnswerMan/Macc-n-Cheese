@@ -115,17 +115,25 @@ void CodeGen::ExtractExpr(const Expr &e, string &s) {
     string t;
     int k, n;
 
-    switch(e.theType)
-    {
-        case IDType:
-        case
-    }
+
 }
 void CodeGen::Listen(const Expr &InExpr) {
-    string s;
+    symbolTableEntries entry = symbolTable[InExpr.tableEntryIndex];
 
-    ExtractExpr(InExpr, s);
-    Generate("RDI       ", s, "");
+    switch (entry.getDataType()){
+        case (floating):
+
+            break;
+        case (integer):
+
+            break;
+        case (cheese):
+
+            break;
+        case (boolean):
+
+            break;
+    }
 }
 
 void CodeGen::ProcessVar(Expr &e) {
