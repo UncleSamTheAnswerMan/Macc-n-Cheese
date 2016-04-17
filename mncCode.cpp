@@ -34,7 +34,6 @@ void CodeGen::Shout(Expr& shoutStuff) {
             break;
         case (floatType):
 
-            Generate("WRF       ", "#" + to_string(shoutStuff.floatVal), "");
             break;
         case (boolType):
             //Generate(("WRI      ", ));
@@ -58,7 +57,7 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
     switch (type) {
         case (intType):
             ///set up array of ints
-            if (HipOrNah == true) {
+            if (HipOrNah) {
                 temp.setDataType(integer);
                 temp.setRelAddress(calcNewRelativeAddress());
                 temp.setHipHip(true);
@@ -72,7 +71,7 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
             break;
         case (floatType):
             ///set up array of floats
-            if (HipOrNah == true) {
+            if (HipOrNah) {
                 temp.setDataType(floating);
                 temp.setRelAddress(calcNewRelativeAddress());
                 temp.setHipHip(true);
@@ -86,7 +85,7 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
             break;
         case (boolType):
             ///set up array of float
-            if (HipOrNah == true) {
+            if (HipOrNah) {
                 temp.setDataType(boolean);
                 temp.setRelAddress(calcNewRelativeAddress());
                 temp.setHipHip(true);
@@ -102,7 +101,7 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
             if(Cheese_Size > 0){
                 Cheese_Size_Temp = Cheese_Size;
             }
-            if (HipOrNah == true){
+            if (HipOrNah){
                 temp.setDataType(cheese);
                 temp.setRelAddress(calcNewRelativeAddress());
                 temp.setHipHip(true);
@@ -155,7 +154,7 @@ void CodeGen::Listen(const Expr &InExpr) {
             Generate("RDI    ", address + "(R15)", "");
             break;
         case (cheese):
-            Generate("RDST    ", address + "(15)", "");
+            Generate("RDST    ", address + "(R15)", "");
             break;
         case (boolean):
             //Best way to do this?
@@ -170,7 +169,7 @@ void CodeGen::ProcessVar(Expr &e) {
         e.ID = varName;
         e.tableEntryIndex = index;
     } else {
-
+        //TODO error stuff
     }
 
 
@@ -178,15 +177,20 @@ void CodeGen::ProcessVar(Expr &e) {
 
 void CodeGen::ProcessLit(Expr& expr) {
     symbolTableEntries tempEntry;
+
+
     switch (expr.theType){
-        case (floatType):
-            expr.floatVal = (float) atof(scan.tokenBuffer.data());
-            break;
+
         case (intType):
             expr.intVal = atoi(scan.tokenBuffer.data());
             break;
+        case (floatType):
         case (cheeseType):
-            expr.cheeseVal = scan.stringBuffer;
+        case (boolType):
+
+            tempEntry.setName(getCurrentTempName());
+            tempEntry.setRelAddress(calcNewRelativeAddress());
+
             break;
     }
 }
@@ -315,6 +319,13 @@ void CodeGen::Finish()
             Generate("STRING    ", "\"" + stringTable[i] + "\"", "");
         }
     }*/
+    Generate("LABEL    ", "NULL_INT", "");
+    Generate("INT    ", "0", "");
+    Generate("LABEL    ", "NULL_REAL", "");
+    Generate("REAL    ", "0.0", "");
+    Generate("LABEL    ", "NULL_STRING", "");
+    Generate("STRING    ", "\\000", "");
+
     outFile.close();
     listFile << endl << endl;
     listFile << " _____________________________________________\n";
