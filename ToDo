@@ -1,5 +1,5 @@
 **1. Remake decs & defineVar - DONE
-*2. Listen needs to use symbolTableEntry - Almost Done - needs listen
+**2. Listen needs to use symbolTableEntry - DONE
 **3. Function for setting up relative addressing for symbol table -> DONE probs
 
 4. Shout needs to be updated to be able to shout floats, cheeses and hip hips
@@ -9,14 +9,13 @@
 6. Make shout work for variables, expressions and cheeses
 **7. Assignment operations
 8. Arithmetic expression evaluation
-9. Set up initial values as found in reference doc
+**9. Set up initial values as found in reference doc - DONE
 10. Hiphip/cheese declarations and initializations
 11. Boolean expression evaluation
 12. If statements (with nesting)
 13. Select...case statement implementation (with nesting)
+14. While statement (with nesting)
 
 Note: Make initializations and assignments the same code block so we
 don't have to keep track of if it is the first time something
 has been assigned or not.
-
-TALK TO MARTY: listen for bools -> how to store them, how to read them  what we want them to do
