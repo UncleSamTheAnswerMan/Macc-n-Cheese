@@ -23,7 +23,7 @@ public:
     int getNumComponents() const;
     int getStrSize() const;
 
-    vector<string> getInitValues();
+    vector<string> getInitValues() const;
     void setName(string n);
     void setDataType(DataType d);
     void setRelAddress(int r);

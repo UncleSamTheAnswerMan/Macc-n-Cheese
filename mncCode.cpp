@@ -63,11 +63,17 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
                 temp.setHipHip(true);
                 temp.setNumComponents(HipHip_Size);
                 CheckId(temp);
+                for(int i = 0; i < HipHip_Size; i++){
+                    Generate("LD    ", "R0", "NULL_INT");
+                    Generate("STO    ", "R0", temp.getRelAddress()+(i*2)+"(R15)");
+                }
                 break;
             }
             temp.setDataType(integer);
             temp.setRelAddress(calcNewRelativeAddress());
             CheckId(temp);
+            Generate("LD    ", "R0", "NULL_INT");
+            Generate("STO    ", "R0", temp.getRelAddress()+"(R15)");
             break;
         case (floatType):
             ///set up array of floats
@@ -77,11 +83,17 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
                 temp.setHipHip(true);
                 temp.setNumComponents(HipHip_Size);
                 CheckId(temp);
+                for(int i = 0; i < HipHip_Size; i++){
+                    Generate("LD    ", "R0", "NULL_REAL");
+                    Generate("STO    ", "R0", temp.getRelAddress()+(i*4)+"(R15)");
+                }
                 break;
             }
             temp.setDataType(floating);
             temp.setRelAddress(calcNewRelativeAddress());
             CheckId(temp);
+            Generate("LD    ", "R0", "NULL_REAL");
+            Generate("STO    ", "R0", temp.getRelAddress()+"(R15)");
             break;
         case (boolType):
             ///set up array of float
@@ -91,11 +103,17 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
                 temp.setHipHip(true);
                 temp.setNumComponents(HipHip_Size);
                 CheckId(temp);
+                for(int i = 0; i < HipHip_Size; i++){
+                    Generate("LD    ", "R0", "NULL_INT");
+                    Generate("STO    ", "R0", temp.getRelAddress()+(i*2)+"(R15)");
+                }
                 break;
             }
             temp.setDataType(boolean);
             temp.setRelAddress(calcNewRelativeAddress());
             CheckId(temp);
+            Generate("LD    ", "R0", "NULL_INT");
+            Generate("STO    ", "R0", temp.getRelAddress()+"(R15)");
             break;
         case (cheeseType):
             if(Cheese_Size > 0){
@@ -108,12 +126,18 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
                 temp.setNumComponents(HipHip_Size);
                 temp.setStrSize(Cheese_Size_Temp);
                 CheckId(temp);
+                for(int i = 0; i < HipHip_Size; i++){
+                    Generate("LD    ", "R0", "NULL_STRING");
+                    Generate("STO    ", "R0", temp.getRelAddress()+(i*Cheese_Size_Temp)+"(R15)");
+                }
                 break;
             }
             temp.setDataType(cheese);
             temp.setRelAddress(calcNewRelativeAddress());
             temp.setStrSize(Cheese_Size_Temp);
             CheckId(temp);
+            Generate("LD    ", "R0", "NULL_STRING");
+            Generate("STO    ", "R0", temp.getRelAddress()+"(R15)");
             break;
     }
 }
@@ -155,9 +179,6 @@ void CodeGen::Listen(const Expr &InExpr) {
             break;
         case (cheese):
             Generate("RDST    ", address + "(R15)", "");
-            break;
-        case (boolean):
-            //Best way to do this?
             break;
     }
 }
