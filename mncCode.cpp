@@ -298,7 +298,10 @@ int CodeGen::calcNewRelativeAddress() {
     return relAddress;
 }
 
-
+void CodeGen::ProcessOp()
+{
+    Generate("IC    ", "R0    ","R1");
+}
 // ******************************
 // ** Public Member Functions  **
 // ******************************

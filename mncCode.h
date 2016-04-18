@@ -67,6 +67,9 @@ public:
 
     void DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int Cheese_Size);
 
+    void ProcessOp();
+    //Boolean expression evaluation
+
 private:
     void IntToAlpha(int val, string& str);
     // Makes a string representation for a positive integer val.
