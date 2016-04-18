@@ -298,10 +298,6 @@ int CodeGen::calcNewRelativeAddress() {
     return relAddress;
 }
 
-void CodeGen::ProcessOp()
-{
-    Generate("IC    ", "R0    ","R1");
-}
 // ******************************
 // ** Public Member Functions  **
 // ******************************
@@ -378,5 +374,13 @@ void CodeGen::Assign(Expr &Assign, Expr &AssignTail){
     Generate("STO ", "R0", A.getRelAddress()+"(R15)");
 }
 
+void CodeGen::ProcessOp(Expr var1, Expr var2)
+{
+    symboltableEntries bool1 = symbolTable[var1.tableEntryIndex];
+    symbolTableEntries bool2 = symbolTable[var2.tableEntryIndex];
+    Generate("LD    ","R0    ",bool1.getRelAddress() + "(R15)");
+    Generate("LD    ","R1    ",bool2.getRelAddress() + "(R15)");
+    Generate("IC    ", "R0    ","R1");
 
 
+}
