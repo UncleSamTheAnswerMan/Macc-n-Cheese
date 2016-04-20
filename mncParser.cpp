@@ -251,6 +251,8 @@ void Parser::MultOp()
 
 void Parser::FactorTail(Expr& expr)
 {
+	OpRec op;
+	op.leftSide = expr;
     Expr factorTailExpr;
 	switch (NextToken())
 	{
@@ -259,7 +261,8 @@ void Parser::FactorTail(Expr& expr)
 		MultOp();
 		// code.ProcessOp();
 		Primary(factorTailExpr);
-		// code.GenInfix();
+		op.rightSide = 	factorTailExpr;
+		code.GenInfix();
 		FactorTail();
 		break;
 	case RSTAPLE:

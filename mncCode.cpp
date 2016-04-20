@@ -399,3 +399,11 @@ void CodeGen::ProcessOp(OpRec& op)
 {
 
 }
+
+void CodeGen::GenInfix(OpRec op){
+    switch(op.oper){
+        case (plus):
+            Generate("IA ", )
+    }
+
+}
