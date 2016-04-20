@@ -400,13 +400,40 @@ void CodeGen::Start()
     //Generate("LDA       ", "R14", "STRINGS");//load address of strings
 }
 void CodeGen::Assign(Expr &Assign, Expr &AssignTail){
-    symbolTableEntries A = symbolTable[Assign.tableEntryIndex];
-    symbolTableEntries t = symbolTable[AssignTail.tableEntryIndex];
+    symbolTableEntries A = symbolTable[Assign.tableEntryIndex]; //left of the assignment
+    symbolTableEntries t = symbolTable[AssignTail.tableEntryIndex]; //right of the assignment
     Generate("LD ", "R0", t.getRelAddress()+"(R15)");
     Generate("STO ", "R0", A.getRelAddress()+"(R15)");
 }
 
 void CodeGen::ProcessOp(OpRec& op)
 {
+    if(scan.tokenBuffer == "+"){op.oper = PLUS;}
+
+    else if(scan.tokenBuffer == "-"){op.oper = MINUS;}
+
+    else if(scan.tokenBuffer == "*"){op.oper =MULT;}
+
+    else if(scan.tokenBuffer == "/"){op.oper =DIV;}
+
+    //LESS
+    else if(scan.tokenBuffer == "<"){}
+    //LESS_EQUAL
+    else if(scan.tokenBuffer == "<="){}
+    //GREAT
+    else if(scan.tokenBuffer == ">"){}
+    //GREAT_EQUAL
+    else if(scan.tokenBuffer == ">="){}
+    //EQUAL
+    else if(scan.tokenBuffer == "==" || scan.tokenBuffer == "!!"){}
+    //NOT_EQUAL
+    else if(scan.tokenBuffer == "!="){}
+}
+
+void CodeGen::GenInfix(OpRec op){
+    switch(op.oper){
+        case (plus):
+            Generate("IA ", )
+    }
 
 }

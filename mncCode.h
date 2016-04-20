@@ -148,6 +148,8 @@ private:
     void Assign(Expr &Assign, Expr &AssignTail);
     ///Takes the variable and the value it is assigned and generates the code for assembly.
 
+    void GenInfix(OpRec op);
+
 };
 
 #endif //MACC_N_CHEESE_MNCCODE_H
