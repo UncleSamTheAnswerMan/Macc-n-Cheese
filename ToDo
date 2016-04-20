@@ -10,11 +10,14 @@
 **7. Assignment operations
 8. Arithmetic expression evaluation
 **9. Set up initial values as found in reference doc - DONE
-10. Hiphip/cheese declarations and initializations
+**10. Hiphip/cheese declarations and initializations - DONE
 11. Boolean expression evaluation
 12. If statements (with nesting)
 13. Select...case statement implementation (with nesting)
 14. While statement (with nesting)
+15. Do..while (with nesting)
+16. break statement
+17. For statement (with nesting)
 
 Note: Make initializations and assignments the same code block so we
 don't have to keep track of if it is the first time something

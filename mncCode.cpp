@@ -319,6 +319,17 @@ int CodeGen::calcNewRelativeAddress() {
     return relAddress;
 }
 
+void CodeGen::IfElse() {
+    //Code code code code code
+}
+
+void CodeGen::IfThen() {
+    //Code code code codey codey code code
+}
+
+void CodeGen::IfEnd() {
+    //Codey codedly code code stuff
+}
 // ******************************
 // ** Public Member Functions  **
 // ******************************
