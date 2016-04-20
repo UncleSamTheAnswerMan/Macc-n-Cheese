@@ -11,6 +11,7 @@
 using namespace std;
 
 enum ExprType {floatType, intType, cheeseType, boolType, IDType, TempType, hiphipType};
+enum OpKind {PLUS, MINUS, MULT, DIV, LESS, LESS_EQUAL, GREAT, GREAT_EQUAL, EQUAL, NOT_EQUAL};
 
 struct Expr {
     ExprType theType;
@@ -20,6 +21,12 @@ struct Expr {
     bool boolVal;
     string cheeseVal;
     string ID;
+};
+
+struct OpRec {
+    Expr leftSide;
+    Expr rightSide;
+    OpKind oper;
 };
 
 class CodeGen{
@@ -67,26 +74,32 @@ public:
 
     void DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int Cheese_Size);
 
-private:
-    void IntToAlpha(int val, string& str);
-    // Makes a string representation for a positive integer val.
+    void ProcessOp(OpRec& op);
+    //Boolean expression evaluation
 
+private:
     vector<symbolTableEntries> symbolTable;
 
-    //vector<string> intSymbolTable;
-    //vector<string> floatSymbolTable;
-//    vector<string> CheeseSymbolTable;
-//    vector<string> boolSymbolTable;
-//    vector<string> HipHipSymbolTable;
-//
-//    ///
-//    static map<string,int> Cheeselength;
-//    static map<string,int> HipHiplength;
+    vector<float> floatingValues;
 
+    //vector<string> intSymbolTable;
 
     int strSum;
 
+
     int maxTemp;     // max temporary allocated so far; initially 0
+
+//    static map<string,int> HipHiplength;
+//    static map<string,int> Cheeselength;
+//    ///
+//
+//    vector<string> HipHipSymbolTable;
+//    vector<string> boolSymbolTable;
+//    vector<string> CheeseSymbolTable;
+    //vector<string> floatSymbolTable;
+
+    // Makes a string representation for a positive integer val.
+    void IntToAlpha(int val, string& str);
 
     int calcNewRelativeAddress();
 
