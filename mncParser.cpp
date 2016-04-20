@@ -59,15 +59,15 @@ void Parser::InitTail()
 	}
 }
 
-void Parser::VarDecTail()
+void Parser::VarDecTail(ExprType& type, bool HipOrNah, int HipHip_Size)
 {
 	switch (NextToken())
 	{
 	case COMMA:
 		Match(COMMA);
 		Match(ID);
-		// code.DefineVar();
-		VarDecTail();
+		code.DefineVar(type, HipOrNah, HipHip_Size);
+		VarDecTail(type, HipOrNah, HipHip_Size);
 		break;
 	case SEMICOLON:
 		break;
@@ -80,7 +80,7 @@ void Parser::VarDecList(ExprType& type, bool HipOrNah, int HipHip_Size)
 {
 	Match(ID);
 	code.DefineVar(type, HipOrNah, HipHip_Size);
-	VarDecTail();
+	VarDecTail(type, HipOrNah, HipHip_Size);
 }
 
 void Parser::DecTail()
@@ -249,7 +249,7 @@ void Parser::MultOp()
 	}
 }
 
-void Parser::FactorTail()
+void Parser::FactorTail(Expr& expr)
 {
     Expr factorTailExpr;
 	switch (NextToken())
@@ -358,7 +358,7 @@ void Parser::ExprTail()
 void Parser::Factor(Expr& expr)
 {
 	Primary(expr);
-	FactorTail();
+	FactorTail(expr);
 }
 
 void Parser::RelOp()

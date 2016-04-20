@@ -35,7 +35,7 @@ private:
 
 	void InitTail();
 
-	void VarDecTail();
+	void VarDecTail(ExprType& type, bool HipOrNah, int HipHip_Size);
 
 	void VarDecList(ExprType& type, bool HipOrNah, int HipHip_Size);
 
@@ -57,7 +57,7 @@ private:
 
 	void MultOp();
 
-	void FactorTail();
+	void FactorTail(Expr& expr);
 
 	void Primary(Expr& expr);
 

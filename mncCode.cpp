@@ -369,8 +369,8 @@ void CodeGen::Start()
     //Generate("LDA       ", "R14", "STRINGS");//load address of strings
 }
 void CodeGen::Assign(Expr &Assign, Expr &AssignTail){
-    symbolTableEntries A = symbolTable[Assign.tableEntryIndex];
-    symbolTableEntries t = symbolTable[AssignTail.tableEntryIndex];
+    symbolTableEntries A = symbolTable[Assign.tableEntryIndex]; //left of the assignment
+    symbolTableEntries t = symbolTable[AssignTail.tableEntryIndex]; //right of the assignment
     Generate("LD ", "R0", t.getRelAddress()+"(R15)");
     Generate("STO ", "R0", A.getRelAddress()+"(R15)");
 }
