@@ -77,6 +77,15 @@ public:
     void ProcessOp(OpRec& op);
     //Boolean expression evaluation
 
+    void IfThen();
+    //Produces the assembly code to handle an if-then statement
+
+    void IfEnd();
+    //Produces the assembly code to handle the end of an if statement
+
+    void IfElse();
+    //Produces the assembly code for if there is an else statement
+
 private:
     vector<symbolTableEntries> symbolTable;
 
