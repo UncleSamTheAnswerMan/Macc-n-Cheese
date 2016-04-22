@@ -409,25 +409,42 @@ void CodeGen::Assign(Expr &Assign, Expr &AssignTail){
 void CodeGen::ProcessOp(OpRec& op)
 {
     if(scan.tokenBuffer == "+"){op.oper = PLUS;}
-
-    else if(scan.tokenBuffer == "-"){op.oper = MINUS;}
-
-    else if(scan.tokenBuffer == "*"){op.oper =MULT;}
-
-    else if(scan.tokenBuffer == "/"){op.oper =DIV;}
-
-    //LESS
-    else if(scan.tokenBuffer == "<"){}
-    //LESS_EQUAL
-    else if(scan.tokenBuffer == "<="){}
-    //GREAT
-    else if(scan.tokenBuffer == ">"){}
-    //GREAT_EQUAL
-    else if(scan.tokenBuffer == ">="){}
-    //EQUAL
-    else if(scan.tokenBuffer == "==" || scan.tokenBuffer == "!!"){}
-    //NOT_EQUAL
-    else if(scan.tokenBuffer == "!="){}
+    else if(scan.tokenBuffer == "-")
+    {
+        op.oper = MINUS;
+    }
+    else if(scan.tokenBuffer == "*")
+    {
+        op.oper =MULT;
+    }
+    else if(scan.tokenBuffer == "/")
+    {
+        op.oper =DIV;
+    }
+    else if(scan.tokenBuffer == "<")
+    {
+        op.oper = LESS;
+    }
+    else if(scan.tokenBuffer == "<=")
+    {
+        op.oper = LESS_EQUAL;
+    }
+    else if(scan.tokenBuffer == ">")
+    {
+        op.oper = GREAT;
+    }
+    else if(scan.tokenBuffer == ">=")
+    {
+        op.oper = GREAT_EQUAL;
+    }
+    else if(scan.tokenBuffer == "==" || scan.tokenBuffer == "!!")
+    {
+        op.oper = EQUAL;
+    }
+    else if(scan.tokenBuffer == "!=")
+    {
+        op.oper = NOT_EQUAL;
+    }
 }
 
 void CodeGen::GenInfix(OpRec op){
