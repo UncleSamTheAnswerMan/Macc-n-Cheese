@@ -417,31 +417,92 @@ void CodeGen::Assign(Expr &Assign, Expr &AssignTail){
 void CodeGen::ProcessOp(OpRec& op)
 {
     if(scan.tokenBuffer == "+"){op.oper = PLUS;}
-
-    else if(scan.tokenBuffer == "-"){op.oper = MINUS;}
-
-    else if(scan.tokenBuffer == "*"){op.oper =MULT;}
-
-    else if(scan.tokenBuffer == "/"){op.oper =DIV;}
-
-    //LESS
-    else if(scan.tokenBuffer == "<"){}
-    //LESS_EQUAL
-    else if(scan.tokenBuffer == "<="){}
-    //GREAT
-    else if(scan.tokenBuffer == ">"){}
-    //GREAT_EQUAL
-    else if(scan.tokenBuffer == ">="){}
-    //EQUAL
-    else if(scan.tokenBuffer == "==" || scan.tokenBuffer == "!!"){}
-    //NOT_EQUAL
-    else if(scan.tokenBuffer == "!="){}
+    else if(scan.tokenBuffer == "-")
+    {
+        op.oper = MINUS;
+    }
+    else if(scan.tokenBuffer == "*")
+    {
+        op.oper =MULT;
+    }
+    else if(scan.tokenBuffer == "/")
+    {
+        op.oper =DIV;
+    }
+    else if(scan.tokenBuffer == "<")
+    {
+        op.oper = LESS;
+    }
+    else if(scan.tokenBuffer == "<=")
+    {
+        op.oper = LESS_EQUAL;
+    }
+    else if(scan.tokenBuffer == ">")
+    {
+        op.oper = GREAT;
+    }
+    else if(scan.tokenBuffer == ">=")
+    {
+        op.oper = GREAT_EQUAL;
+    }
+    else if(scan.tokenBuffer == "==" || scan.tokenBuffer == "!!")
+    {
+        op.oper = EQUAL;
+    }
+    else if(scan.tokenBuffer == "!=")
+    {
+        op.oper = NOT_EQUAL;
+    }
 }
 
 void CodeGen::GenInfix(OpRec op){
+
+    symbolTableEntries leftside = symbolTable[op.leftSide.tableEntryIndex];
+    symbolTableEntries rightside = symbolTable[op.leftSide.tableEntryIndex];
+
+  ///Check for the same type
+    if(leftside.getDataType() != rightside.getDataType()){
+        ///symantics error
+    }
+
     switch(op.oper){
-        case (plus):
-            Generate("IA ", )
+        case (PLUS):
+            Generate("LD ", "R0", leftside.getRelAddress()+"(R15)");
+            Generate("LD ", "R2", rightside.getRelAddress()+"(R15)");
+
+            switch (leftside.getDataType()){
+                case (integer):
+                    Generate("IA ", "R0", "R2");
+                case (floating):
+                    Generate("FA ", "R0", "R2");
+            }
+        case (MINUS):
+            Generate("LD ", "R0", leftside.getRelAddress()+"(R15)");
+            Generate("LD ", "R2", rightside.getRelAddress()+"(R15)");
+            switch (leftside.getDataType()){
+                case (integer):
+                    Generate("IS ", "R0", "R2");
+                case (floating):
+                    Generate("FS ", "R0", "R2");
+            }
+        case (MULT):
+            Generate("LD ", "R0", leftside.getRelAddress()+"(R15)");
+            Generate("LD ", "R2", rightside.getRelAddress()+"(R15)");
+            switch (leftside.getDataType()){
+                case (integer):
+                    Generate("IM ", "R0", "R2");
+                case (floating):
+                    Generate("FM ", "R0", "R2");
+            }
+        case (DIV):
+            Generate("LD ", "R0", leftside.getRelAddress()+"(R15)");
+            Generate("LD ", "R2", rightside.getRelAddress()+"(R15)");
+            switch (leftside.getDataType()){
+                case (integer):
+                    Generate("ID ", "R0", "R2");
+                case (floating):
+                    Generate("FD ", "R0", "R2");
+            }
     }
 
 }
