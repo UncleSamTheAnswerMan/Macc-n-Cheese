@@ -77,7 +77,7 @@ public:
     void ProcessOp(OpRec& op);
     //Boolean expression evaluation
 
-    void IfThen();
+    void IfThen(Expr &expr);
     //Produces the assembly code to handle an if-then statement
 
     void IfEnd();
