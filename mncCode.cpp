@@ -401,9 +401,53 @@ void CodeGen::ProcessOp(OpRec& op)
 }
 
 void CodeGen::GenInfix(OpRec op){
+
+    symbolTableEntries leftside = symbolTable[op.leftSide.tableEntryIndex];
+    symbolTableEntries rightside = symbolTable[op.leftSide.tableEntryIndex];
+
+  ///Check for the same type
+    if(leftside.getDataType() != rightside.getDataType()){
+        ///symantics error
+    }
+
     switch(op.oper){
-        case (plus):
-            Generate("IA ", )
+        case (PLUS):
+            Generate("LD ", "R0", leftside.getRelAddress()+"(R15)");
+            Generate("LD ", "R2", rightside.getRelAddress()+"(R15)");
+
+            switch (leftside.getDataType()){
+                case (integer):
+                    Generate("IA ", "R0", "R2");
+                case (floating):
+                    Generate("FA ", "R0", "R2");
+            }
+        case (MINUS):
+            Generate("LD ", "R0", leftside.getRelAddress()+"(R15)");
+            Generate("LD ", "R2", rightside.getRelAddress()+"(R15)");
+            switch (leftside.getDataType()){
+                case (integer):
+                    Generate("IS ", "R0", "R2");
+                case (floating):
+                    Generate("FS ", "R0", "R2");
+            }
+        case (MULT):
+            Generate("LD ", "R0", leftside.getRelAddress()+"(R15)");
+            Generate("LD ", "R2", rightside.getRelAddress()+"(R15)");
+            switch (leftside.getDataType()){
+                case (integer):
+                    Generate("IM ", "R0", "R2");
+                case (floating):
+                    Generate("FM ", "R0", "R2");
+            }
+        case (DIV):
+            Generate("LD ", "R0", leftside.getRelAddress()+"(R15)");
+            Generate("LD ", "R2", rightside.getRelAddress()+"(R15)");
+            switch (leftside.getDataType()){
+                case (integer):
+                    Generate("ID ", "R0", "R2");
+                case (floating):
+                    Generate("FD ", "R0", "R2");
+            }
     }
 
 }
