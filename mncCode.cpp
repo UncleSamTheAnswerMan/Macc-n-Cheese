@@ -456,12 +456,11 @@ void CodeGen::GenInfix(OpRec op){
     if(leftside.getDataType() != rightside.getDataType()){
         ///symantics error
     }
-
+    Generate("LD ", "R0", leftside.getRelAddress()+"(R15)");
+    Generate("LD ", "R2", rightside.getRelAddress()+"(R15)");
+    //TODO need temp symbol table entry
     switch(op.oper){
         case (PLUS):
-            Generate("LD ", "R0", leftside.getRelAddress()+"(R15)");
-            Generate("LD ", "R2", rightside.getRelAddress()+"(R15)");
-
             switch (leftside.getDataType()){
                 case (integer):
                     Generate("IA ", "R0", "R2");
@@ -469,8 +468,6 @@ void CodeGen::GenInfix(OpRec op){
                     Generate("FA ", "R0", "R2");
             }
         case (MINUS):
-            Generate("LD ", "R0", leftside.getRelAddress()+"(R15)");
-            Generate("LD ", "R2", rightside.getRelAddress()+"(R15)");
             switch (leftside.getDataType()){
                 case (integer):
                     Generate("IS ", "R0", "R2");
@@ -478,8 +475,6 @@ void CodeGen::GenInfix(OpRec op){
                     Generate("FS ", "R0", "R2");
             }
         case (MULT):
-            Generate("LD ", "R0", leftside.getRelAddress()+"(R15)");
-            Generate("LD ", "R2", rightside.getRelAddress()+"(R15)");
             switch (leftside.getDataType()){
                 case (integer):
                     Generate("IM ", "R0", "R2");
@@ -487,8 +482,6 @@ void CodeGen::GenInfix(OpRec op){
                     Generate("FM ", "R0", "R2");
             }
         case (DIV):
-            Generate("LD ", "R0", leftside.getRelAddress()+"(R15)");
-            Generate("LD ", "R2", rightside.getRelAddress()+"(R15)");
             switch (leftside.getDataType()){
                 case (integer):
                     Generate("ID ", "R0", "R2");
@@ -498,3 +491,9 @@ void CodeGen::GenInfix(OpRec op){
     }
 
 }
+//TODO cheese Assignment
+//cheeses no concatenation
+//LDA R1, STR1
+//LD R2, #18
+//BKT R1, STR2
+//go for length of smaller cheese
