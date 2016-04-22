@@ -321,14 +321,22 @@ int CodeGen::calcNewRelativeAddress() {
 
 void CodeGen::IfElse() {
     //Code code code code code
+    Generate("LABEL    ", "IF_ELSE", "");
 }
 
-void CodeGen::IfThen() {
+void CodeGen::IfThen(Expr &expr) {
     //Code code code codey codey code code
+    //If condition isn't met either jump to the else if there is one or
+    //jump to the end
+
+    Generate("JMP    ","IF_ELSE","");
 }
 
 void CodeGen::IfEnd() {
     //Codey codedly code code stuff
+    //if it's not going to do what's in the if, jump to the end
+    //generate a label
+    Generate("LABEL    ", "IF_END", "");
 }
 // ******************************
 // ** Public Member Functions  **
