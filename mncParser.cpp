@@ -6,11 +6,16 @@
 
 #include <iostream>
 #include <string>
+#include <fstream>
+#include <iomanip>
 using namespace std;
 
 #include "mncParser.h"
 extern Scanner scan;
 extern CodeGen code;
+
+extern ifstream sourceFile;
+extern ofstream outFile, listFile;
 
 Parser::Parser()
 {
@@ -59,15 +64,15 @@ void Parser::InitTail()
 	}
 }
 
-void Parser::VarDecTail(ExprType& type, bool HipOrNah, int HipHip_Size)
+void Parser::VarDecTail(ExprType& type, bool HipOrNah, int HipHip_Size, int cheeseSize)
 {
 	switch (NextToken())
 	{
 	case COMMA:
 		Match(COMMA);
 		Match(ID);
-		code.DefineVar(type, HipOrNah, HipHip_Size);
-		VarDecTail(type, HipOrNah, HipHip_Size);
+		code.DefineVar(type, HipOrNah, HipHip_Size, cheeseSize);
+		VarDecTail(type, HipOrNah, HipHip_Size, cheeseSize);
 		break;
 	case SEMICOLON:
 		break;
@@ -76,11 +81,11 @@ void Parser::VarDecTail(ExprType& type, bool HipOrNah, int HipHip_Size)
 	}
 }
 
-void Parser::VarDecList(ExprType& type, bool HipOrNah, int HipHip_Size)
+void Parser::VarDecList(ExprType& type, bool HipOrNah, int HipHip_Size, int cheeseSize)
 {
 	Match(ID);
-	code.DefineVar(type, HipOrNah, HipHip_Size);
-	VarDecTail(type, HipOrNah, HipHip_Size);
+	code.DefineVar(type, HipOrNah, HipHip_Size, cheeseSize);
+	VarDecTail(type, HipOrNah, HipHip_Size, cheeseSize);
 }
 
 void Parser::DecTail()
@@ -105,6 +110,7 @@ void Parser::DecTail()
 void Parser::Declaration()
 {
 	bool HipOrNah = false;
+    int Cheese_Size = 0;
 	ExprType type;
 	switch (NextToken())
 	{
@@ -112,10 +118,9 @@ void Parser::Declaration()
 	case CHEESE_SYM:
 	case FLOAT_SYM:
 	case INT_SYM:
-        int Cheese_Size = 0;
-		Type(type, &Cheese_Size);
+		Type(type, Cheese_Size);
 		Match(COLON);
-		VarDecList(type, HipOrNah, Cheese_Size);
+		VarDecList(type, HipOrNah, 0,  Cheese_Size);
 		Match(SEMICOLON);
 		break;
 	case HIPHIP_SYM:
@@ -123,11 +128,11 @@ void Parser::Declaration()
 		Match(HIPHIP_SYM);
 		Match(LSTAPLE);
 		Match(INT_LIT);
+        HipHip_Size = atoi(scan.tokenBuffer.data());
 		Match(RSTAPLE);
-		HipHip_Size = scan.tokenBuffer;
-		Type(type);
+		Type(type, Cheese_Size);
 		HipOrNah = true;
-		VarDecList(type, HipOrNah, HipHip_Size);
+		VarDecList(type, HipOrNah, HipHip_Size, Cheese_Size);
 		Match(SEMICOLON);
 		break;
 	default:
@@ -166,12 +171,13 @@ void Parser::CheeseTypeTail(int& Cheese_size)
 	{
 	case LSTAPLE:
 		Match(LSTAPLE);
-		Cheese_size = scan.tokenBuffer;
 		Match(INT_LIT);
+		Cheese_size = atoi(scan.tokenBuffer.data());
 		Match(RSTAPLE);
 		break;
 	case COLON:
 	case ID:
+        Cheese_size = 1024;
 		break;
 	default:
 		SyntaxError(NextToken(), "");
@@ -181,7 +187,7 @@ void Parser::CheeseTypeTail(int& Cheese_size)
 void Parser::CheeseType(int& Cheese_size)
 {
 	Match(CHEESE_SYM);
-	CheeseTypeTail(&Cheese_size);
+	CheeseTypeTail(Cheese_size);
 }
 
 void Parser::Type(ExprType& type, int& Cheese_Size)
@@ -202,7 +208,7 @@ void Parser::Type(ExprType& type, int& Cheese_Size)
 		break;
 	case CHEESE_SYM:
         type = cheeseType;
-		CheeseType(&Cheese_Size);
+		CheeseType(Cheese_Size);
 		break;
 	default:
 		SyntaxError(NextToken(), "");
@@ -259,11 +265,11 @@ void Parser::FactorTail(Expr& expr)
 	case MULT_OP:
 	case DIV_OP:
 		MultOp();
-		// code.ProcessOp();
+		code.ProcessOp(op);
 		Primary(factorTailExpr);
 		op.rightSide = 	factorTailExpr;
-		code.GenInfix();
-		FactorTail();
+		code.GenInfix(op);
+		FactorTail(factorTailExpr);
 		break;
 	case RSTAPLE:
 	case RBANANA:
@@ -285,9 +291,9 @@ void Parser::FactorTail(Expr& expr)
 	}
 }
 
-void Parser::primary(Expr& expr)
+void Parser::Primary(Expr& expr)
 {
-    Expr primaryExpr;
+    //Expr primaryExpr;
 	switch (NextToken())
 	{
 	case FALSE_SYM:
@@ -300,11 +306,11 @@ void Parser::primary(Expr& expr)
 		break;
 	case ID:
 		Variable();
-		code.ProcessVar(primaryExpr);
+		code.ProcessVar(expr);
 		break;
 	case LBANANA:
 		Match(LBANANA);
-		Expression(primaryExpr);
+		Expression(expr);
 		Match(RBANANA);
 		break;
 	default:
@@ -739,12 +745,12 @@ void Parser::ListenStmt()
 void Parser::AssignStmt()
 {
     Expr AssignExpr;
-    Expr assignTailExpr;
+    Expr AssignTailExpr;
 	Variable();
 	code.ProcessVar(AssignExpr);
 	Match(ASSIGN_OP);
 	AssignTail(AssignTailExpr);
-	code.Assign(AssignExpr, assignTailExpr);
+	code.Assign(AssignExpr, AssignTailExpr);
 	Match(SEMICOLON);
 }
 

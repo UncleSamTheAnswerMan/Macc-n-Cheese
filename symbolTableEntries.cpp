@@ -6,7 +6,6 @@
 
 symbolTableEntries::symbolTableEntries() {
     name = "";
-    dataType = NULL;
     relativeAddress = 0;
     hiphip = false;
     numComponents = 0;

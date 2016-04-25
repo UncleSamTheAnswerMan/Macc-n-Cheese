@@ -35,9 +35,9 @@ private:
 
 	void InitTail();
 
-	void VarDecTail(ExprType& type, bool HipOrNah, int HipHip_Size);
+	void VarDecTail(ExprType& type, bool HipOrNah, int HipHip_Size, int cheeseSize);
 
-	void VarDecList(ExprType& type, bool HipOrNah, int HipHip_Size);
+	void VarDecList(ExprType& type, bool HipOrNah, int HipHip_Size, int cheeseSize);
 
 	void DecTail();
 
@@ -137,7 +137,7 @@ private:
 
 	void Program();
 
-	void SyntaxError();
+	void SyntaxError(Token t);
 
 }; // end of Parser class
 

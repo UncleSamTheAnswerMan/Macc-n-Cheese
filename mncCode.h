@@ -86,10 +86,18 @@ public:
     void IfElse();
     //Produces the assembly code for if there is an else statement
 
+    void GenInfix(OpRec op);
+
+    void Assign(Expr &Assign, Expr &AssignTail);
+    ///Takes the variable and the value it is assigned and generates the code for assembly.
+
+    static void makeItLowerCase(string& doIt);
+
 private:
     vector<symbolTableEntries> symbolTable;
 
     vector<float> floatingValues;
+    vector<string> stringValues;
 
     //vector<string> intSymbolTable;
 
@@ -97,6 +105,9 @@ private:
 
 
     int maxTemp;     // max temporary allocated so far; initially 0
+    int maxFloat;
+    int maxString;
+    int maxBoolShout;
 
 //    static map<string,int> HipHiplength;
 //    static map<string,int> Cheeselength;
@@ -110,11 +121,23 @@ private:
     // Makes a string representation for a positive integer val.
     void IntToAlpha(int val, string& str);
 
+    void genSymbolTableStuff();
+
     int calcNewRelativeAddress();
 
     string getCurrentTempName();
 
     int getSymbolTableIndex(const string s);
+
+    void genFloatStatements();
+
+    string getCurrentFloatName();
+
+    string getCurrentBoolShoutName();
+
+    void genStringStatements();
+
+    string getCurrentStringName();
 
     void createSymbolTableEntry(Expr& expr);//creates a symbolTableEntries object and places into symbolTable
 
@@ -145,10 +168,9 @@ private:
 
     //int strSize(const string findSize);//returns size of string in words, including null bytes
 
-    void Assign(Expr &Assign, Expr &AssignTail);
-    ///Takes the variable and the value it is assigned and generates the code for assembly.
 
-    void GenInfix(OpRec op);
+
+
 
 };
 
