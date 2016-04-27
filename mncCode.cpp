@@ -30,7 +30,7 @@ CodeGen::CodeGen()
 
 string CodeGen::getCurrentBoolShoutName() {
     string val;
-    string temp = "BOOSHOUT";
+    string temp = "BS";
     IntToAlpha(maxBoolShout, val);
     maxBoolShout++;
     return (temp+val);
@@ -38,6 +38,8 @@ string CodeGen::getCurrentBoolShoutName() {
 
 void CodeGen::Shout(Expr& shoutStuff) {
     symbolTableEntries holdThis;
+    string val;
+
     string booShout;
     switch (shoutStuff.theType){
         case (intType):
@@ -45,44 +47,52 @@ void CodeGen::Shout(Expr& shoutStuff) {
             break;
         case (floatType):
             holdThis = symbolTable[shoutStuff.tableEntryIndex];
-            Generate("WRF    ", holdThis.getRelAddress() + "(R15)", "");
+            Generate("WRF    ", holdThis.getName(), "");
             break;
         case (boolType):
             holdThis = symbolTable[shoutStuff.tableEntryIndex];
             booShout = getCurrentBoolShoutName();
-            Generate("LD    ", "R0", holdThis.getRelAddress() + "(R15)");
+            IntToAlpha(holdThis.getRelAddress(), val);
+            Generate("LD    ", "R0", " +" + val + "(R15)");
             Generate("LD    ", "R2", "#0");
             Generate("IC    ", "R0", "R2");
             Generate("JNE    ", booShout, "");
-            Generate("WRST    ", "FALSE_BOOL", "");
+            Generate("WRST    ", "FBOOL", "");
+
+            Generate("JMP    ", booShout + "END", "");
             Generate("LABEL    ", booShout, "");
-            Generate("WRST    ", "TRUE_BOOL", "");
+            Generate("WRST    ", "TBOOL", "");
+            Generate("LABEL    ", booShout +"END", "");
             break;
         case (cheeseType):
             holdThis = symbolTable[shoutStuff.tableEntryIndex];
-            Generate("WRST    ", holdThis.getRelAddress()+"(R15)", "");
+            Generate("WRST    ", holdThis.getName(), "");
             break;
         case (IDType):
             holdThis = symbolTable[shoutStuff.tableEntryIndex];
+
             switch (holdThis.getDataType()){
                 case (integer):
-                    Generate("WRI    ", holdThis.getRelAddress() + "(R15)", "");
+                    Generate("WRI    ", holdThis.getName(), "");
                     break;
                 case (floating):
-                    Generate("WRF    ", holdThis.getRelAddress() + "(R15)", "");
+                    Generate("WRF    ", holdThis.getName(), "");
                     break;
                 case (cheese):
-                    Generate("WRST    ", holdThis.getRelAddress() + "(R15)", "");
+                    Generate("WRST    ", holdThis.getName(), "");
                     break;
                 case (boolean):
                     booShout = getCurrentBoolShoutName();
-                    Generate("LD    ", "R0", holdThis.getRelAddress() + "(R15)");
+                    Generate("LD    ", "R0", holdThis.getName());
                     Generate("LD    ", "R2", "#0");
                     Generate("IC    ", "R0", "R2");
                     Generate("JNE    ", booShout, "");
-                    Generate("WRST    ", "FALSE_BOOL", "");
+                    Generate("WRST    ", "FBOOL", "");
                     Generate("LABEL    ", booShout, "");
-                    Generate("WRST    ", "TRUE_BOOL", "");
+                    Generate("JMP    ", booShout + "END", "");
+                    Generate("LABEL    ", booShout, "");
+                    Generate("WRST    ", "TBOOL", "");
+                    Generate("LABEL    ", booShout +"END", "");
                     break;
             }
             break;
@@ -106,7 +116,7 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
                 temp.setNumComponents(HipHip_Size);
                 CheckId(temp);
                 for(int i = 0; i < HipHip_Size; i++){
-                    Generate("LD    ", "R0", "NULL_INT");
+                    Generate("LD    ", "R0", "NINT");
                     Generate("STO    ", "R0", temp.getRelAddress()+(i*2)+"(R15)");
                 }
                 break;
@@ -114,7 +124,7 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
             temp.setDataType(integer);
             temp.setRelAddress(calcNewRelativeAddress());
             CheckId(temp);
-            Generate("LD    ", "R0", "NULL_INT");
+            Generate("LD    ", "R0", "NINT");
             Generate("STO    ", "R0", temp.getRelAddress()+"(R15)");
             break;
         case (floatType):
@@ -126,7 +136,7 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
                 temp.setNumComponents(HipHip_Size);
                 CheckId(temp);
                 for(int i = 0; i < HipHip_Size; i++){
-                    Generate("LD    ", "R0", "NULL_REAL");//TODO fix this
+                    Generate("LDA    ", "R0", "NREAL");//TODO fix this
                     Generate("STO    ", "R0", temp.getRelAddress()+(i*4)+"(R15)");
                 }
                 break;
@@ -134,7 +144,7 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
             temp.setDataType(floating);
             temp.setRelAddress(calcNewRelativeAddress());
             CheckId(temp);
-            Generate("LD    ", "R0", "NULL_REAL");
+            Generate("LD    ", "R0", "NREAL");
             Generate("STO    ", "R0", temp.getRelAddress()+"(R15)");
             break;
         case (boolType):
@@ -146,7 +156,7 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
                 temp.setNumComponents(HipHip_Size);
                 CheckId(temp);
                 for(int i = 0; i < HipHip_Size; i++){
-                    Generate("LD    ", "R0", "NULL_INT");
+                    Generate("LD    ", "R0", "NINT");
                     Generate("STO    ", "R0", temp.getRelAddress()+(i*2)+"(R15)");
                 }
                 break;
@@ -154,7 +164,7 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
             temp.setDataType(boolean);
             temp.setRelAddress(calcNewRelativeAddress());
             CheckId(temp);
-            Generate("LD    ", "R0", "NULL_INT");
+            Generate("LD    ", "R0", "NINT");
             Generate("STO    ", "R0", temp.getRelAddress()+"(R15)");
             break;
         case (cheeseType):
@@ -169,7 +179,7 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
                 temp.setStrSize(Cheese_Size_Temp);
                 CheckId(temp);
                 for(int i = 0; i < HipHip_Size; i++){
-                    Generate("LD    ", "R0", "NULL_STRING");//TODO FIX this
+                    Generate("LD    ", "R0", "NSTRING");//TODO FIX this
                     Generate("STO    ", "R0", temp.getRelAddress()+(i*Cheese_Size_Temp)+"(R15)");
                 }
                 break;
@@ -178,7 +188,7 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
             temp.setRelAddress(calcNewRelativeAddress());
             temp.setStrSize(Cheese_Size_Temp);
             CheckId(temp);
-            Generate("LD    ", "R0", "NULL_STRING");
+            Generate("LD    ", "R0", "NSTRING");
             Generate("STO    ", "R0", temp.getRelAddress()+"(R15)");
             break;
     }
@@ -240,7 +250,7 @@ void CodeGen::ProcessVar(Expr &e) {
 
 void CodeGen::ProcessLit(Expr& expr) {
     symbolTableEntries tempEntry;
-
+    string val;
 
     switch (expr.theType){
 
@@ -252,31 +262,35 @@ void CodeGen::ProcessLit(Expr& expr) {
         case (boolType):
             tempEntry.setName(getCurrentTempName());
             tempEntry.setRelAddress(calcNewRelativeAddress());
+
             if (boolType == expr.theType){
                 tempEntry.setDataType(boolean);
                 string fromScanner = scan.tokenBuffer;
                 makeItLowerCase(fromScanner);
                 expr.boolVal = fromScanner.compare("true") == 0;
-                Generate("LD    ", "R0    ", (expr.boolVal) ? "#1" : "#0");
-                Generate("STO    ", "R0    ", tempEntry.getRelAddress() + "(R15)");
+                IntToAlpha(tempEntry.getRelAddress(), val);
+                Generate("LD    ", "R0", (expr.boolVal) ? "#1" : "#0");
+                Generate("STO    ", "R0", " +" + val + "(R15)");
             } else if (expr.theType == cheeseType){
                 int tStringVal = stringValues.size();
                 stringValues.push_back(scan.stringBuffer);
                 tempEntry.setDataType(cheese);
                 tempEntry.setStrSize(stringValues[stringValues.size()-1].size());
-                string tString = "STEMP" + tStringVal;
-                Generate("LDA    ", "R0    ", tString );
-                Generate("LD    ", "R1    ", "#" + stringValues[stringValues.size()-1]);
-                Generate("BKT    ", "R0    ", tempEntry.getRelAddress() + "(R15)");
+                IntToAlpha(tStringVal,val);
+                string tString = "STEMP" + val;
+                Generate("LDA    ", "R0", tString );
+                Generate("LD    ", "R1", "#" + to_string(stringValues[stringValues.size()-1].size()));
+                Generate("BKT    ", "R0", tempEntry.getName());
 
             } else if (expr.theType == floatType){
                 int tFloatVal = floatingValues.size();
                 floatingValues.push_back(atof(scan.tokenBuffer.data()));
                 tempEntry.setDataType(floating);
-                string fString = "FTEMP" + tFloatVal;
-                Generate("LDA    ", "R0    ", fString);
-                Generate("LD    ", "R1    ", "#4");
-                Generate("BKT    ", "R0    ", tempEntry.getRelAddress() + "(R15)");
+                IntToAlpha(tFloatVal, val);
+                string fString = "FTEMP" + val;
+                Generate("LDA    ", "R0", fString);
+                Generate("LD    ", "R1", "#4");
+                Generate("BKT    ", "R0", tempEntry.getName());
             }
             expr.tableEntryIndex = symbolTable.size();
             symbolTable.push_back(tempEntry);
@@ -391,7 +405,7 @@ int CodeGen::calcNewRelativeAddress() {
 
 void CodeGen::IfElse() {
     //Code code code code code
-    Generate("LABEL    ", "IF_ELSE", "");
+    Generate("LABEL    ", "IFELSE", "");
 }
 
 void CodeGen::IfThen(Expr &expr) {
@@ -399,14 +413,14 @@ void CodeGen::IfThen(Expr &expr) {
     //If condition isn't met either jump to the else if there is one or
     //jump to the end
 
-    Generate("JMP    ","IF_ELSE","");
+    Generate("JMP    ","IFELSE","");
 }
 
 void CodeGen::IfEnd() {
     //Codey codedly code code stuff
     //if it's not going to do what's in the if, jump to the end
     //generate a label
-    Generate("LABEL    ", "IF_END", "");
+    Generate("LABEL    ", "IFEND", "");
 }
 
 void CodeGen::genFloatStatements() {
@@ -429,7 +443,7 @@ string CodeGen::getCurrentFloatName() {
 void CodeGen::genStringStatements() {
     for (int i = 0; i < stringValues.size(); i++){
         Generate("LABEL    ", getCurrentStringName(), "");
-        Generate("STRING    ", stringValues[i], "");
+        Generate("STRING    ", "\"" + stringValues[i] + "\"", "");
     }
 
 }
@@ -452,33 +466,35 @@ void CodeGen::makeItLowerCase(string &doIt) {
 void CodeGen::genSymbolTableStuff() {
     for (int i = 0; i < symbolTable.size(); i++){
         symbolTableEntries temp = symbolTable[i];
+        Generate("LABEL    ", temp.getName(), "");
         switch(temp.getDataType()){
             case(integer):
+
                 if (temp.getHipHip()){
-                    Generate("SKIP    ", temp.getNumComponents()*2 + "", "");
+                    Generate("SKIP    ", to_string(temp.getNumComponents()*2) + "", "");
                 } else {
                     Generate("SKIP    ", "2", "");
                 }
                 break;
             case(floating):
                 if (temp.getHipHip()){
-                    Generate("SKIP    ", temp.getNumComponents()*4 + "", "");
+                    Generate("SKIP    ", to_string(temp.getNumComponents()*4) + "", "");
                 } else {
                     Generate("SKIP    ", "4", "");
                 }
                 break;
             case(boolean):
                 if (temp.getHipHip()){
-                    Generate("SKIP    ", temp.getNumComponents()*4 +"", "");
+                    Generate("SKIP    ", to_string(temp.getNumComponents()*4) +"", "");
                 } else {
                     Generate("SKIP    ", "2", "");
                 }
                 break;
             case(cheese):
                 if (temp.getHipHip()){
-                    Generate("SKIP    ", temp.getNumComponents()*temp.getStrSize() + "", "");
+                    Generate("SKIP    ", to_string(temp.getNumComponents()*temp.getStrSize()) + "", "");
                 } else {
-                    Generate("SKIP    ", temp.getStrSize() + "", "");
+                    Generate("SKIP    ", to_string(temp.getStrSize()) + "", "");
                 }
                 break;
 
@@ -499,16 +515,16 @@ void CodeGen::Finish()
     Generate("HALT      ", "", "");
     Generate("LABEL     ", "VARS", "");
     genSymbolTableStuff();
-    Generate("LABEL    ", "NULL_INT", "");
+    Generate("LABEL    ", "NINT", "");
     Generate("INT    ", "0", "");
-    Generate("LABEL    ", "NULL_REAL", "");
+    Generate("LABEL    ", "NREAL", "");
     Generate("REAL    ", "0.0", "");
-    Generate("LABEL    ", "NULL_STRING", "");
-    Generate("STRING    ", "\\000", "");
-    Generate("LABEL    ", "FALSE_BOOL", "");
-    Generate("STRING    ", "FALSE", "");
-    Generate("LABEL    ", "TRUE_BOOL", "");
-    Generate("STRING    ", "TRUE", "");
+    Generate("LABEL    ", "NSTRING", "");
+    Generate("STRING    ", "\"\\000\"", "");
+    Generate("LABEL    ", "FBOOL", "");
+    Generate("STRING    ", "\"FALSE\"", "");
+    Generate("LABEL    ", "TBOOL", "");
+    Generate("STRING    ", "\"TRUE\"", "");
     genFloatStatements();
     genStringStatements();
     outFile.close();

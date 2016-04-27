@@ -131,6 +131,7 @@ void Parser::Declaration()
         HipHip_Size = atoi(scan.tokenBuffer.data());
 		Match(RSTAPLE);
 		Type(type, Cheese_Size);
+		Match(COLON);
 		HipOrNah = true;
 		VarDecList(type, HipOrNah, HipHip_Size, Cheese_Size);
 		Match(SEMICOLON);
@@ -731,7 +732,7 @@ void Parser::ShoutStmt()
 {
 	Match(SHOUT_SYM);
 	ItemList();
-	// code.NewLine();
+	code.NewLine();
 	Match(SEMICOLON);
 }
 
