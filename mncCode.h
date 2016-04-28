@@ -21,6 +21,7 @@ struct Expr {
     bool boolVal;
     string cheeseVal;
     string ID;
+    bool hiphipIndex=false;
 };
 
 struct OpRec {
@@ -43,6 +44,8 @@ public:
 
     //void Assign(const ExprRec & target, const ExprRec & source);
     // Produces the assembly code for an assignment from Source to Target.
+
+    void HipHipIndex(Expr& hiphip, Expr& index);
 
     void Finish();
     // Generates code to finish the program.
@@ -118,6 +121,7 @@ private:
 //    vector<string> CheeseSymbolTable;
     //vector<string> floatSymbolTable;
 
+    int oneOrTwo (int size);
     // Makes a string representation for a positive integer val.
     void IntToAlpha(int val, string& str);
 

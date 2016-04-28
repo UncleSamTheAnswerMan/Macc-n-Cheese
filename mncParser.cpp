@@ -306,7 +306,7 @@ void Parser::Primary(Expr& expr)
 		code.ProcessLit(expr);
 		break;
 	case ID:
-		Variable();
+		Variable(expr);
 		code.ProcessVar(expr);
 		break;
 	case LBANANA:
@@ -482,7 +482,7 @@ void Parser::CaseList()
 void Parser::ForAssign()
 {
     Expr forAssignExpr;
-	Variable();
+	Variable(forAssignExpr);
 	// code.ProcessVar();
 	Match(ASSIGN_OP);
 	Expression(forAssignExpr);
@@ -620,7 +620,7 @@ void Parser::ItemList()
 	ItemListTail();
 }
 
-void Parser::VariableTail()
+void Parser::VariableTail(Expr& expr)
 {
     Expr varTail;
 	switch (NextToken())
@@ -628,6 +628,7 @@ void Parser::VariableTail()
 	case LSTAPLE:
 		Match(LSTAPLE);
 		Expression(varTail);
+		code.HipHipIndex(expr, varTail);
 		Match(RSTAPLE);
 		break;
 	case RSTAPLE:
@@ -655,13 +656,14 @@ void Parser::VariableTail()
 
 void Parser::VarListTail()
 {
+	Expr varListTailExpr;
 	switch (NextToken())
 	{
 	case COMMA:
 		Match(COMMA);
-		Variable();
+		Variable(varListTailExpr);
 		//code.ProcessVar();
-		// code.Listen();
+		//code.Listen();
 		VarListTail();
 		break;
 	case SEMICOLON:
@@ -673,9 +675,10 @@ void Parser::VarListTail()
 
 void Parser::VarList()
 {
-	Variable();
-	// code.ProcessVar();
-	// code.Listen();
+	Expr varListExpr;
+	Variable(varListExpr);
+	//code.ProcessVar();
+	//code.Listen();
 	VarListTail();
 }
 
@@ -715,10 +718,11 @@ void Parser::AssignTail(Expr & assignTailExpr)
 	}
 }
 
-void Parser::Variable()
+void Parser::Variable(Expr& expr)
 {
 	Match(ID);
-	VariableTail();
+	expr.ID = scan.tokenBuffer;
+	VariableTail(expr);
 }
 
 void Parser::BreakStmt()
@@ -747,7 +751,7 @@ void Parser::AssignStmt()
 {
     Expr AssignExpr;
     Expr AssignTailExpr;
-	Variable();
+	Variable(AssignExpr);
 	code.ProcessVar(AssignExpr);
 	Match(ASSIGN_OP);
 	AssignTail(AssignTailExpr);

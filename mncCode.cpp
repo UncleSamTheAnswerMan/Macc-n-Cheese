@@ -36,6 +36,24 @@ string CodeGen::getCurrentBoolShoutName() {
     return (temp+val);
 }
 
+void CodeGen::HipHipIndex(Expr &hiphip, Expr &index) {
+    symbolTableEntries temp;
+    string val;
+    hiphip.hiphipIndex = true;
+    if (index.theType == intType){
+        IntToAlpha(index.intVal, val);
+        Generate("LD    ", "R10", " #" + val);
+    } else {
+        temp = symbolTable[index.tableEntryIndex];
+        if (temp.getDataType() != integer){
+            //TODO semantics error must be integer
+        } else {
+            IntToAlpha(temp.getRelAddress(), val);
+            Generate("LDA    ", "R10", " +" + val + "(R15)");
+        }
+    }
+}
+
 void CodeGen::Shout(Expr& shoutStuff) {
     symbolTableEntries holdThis;
     string val;
@@ -47,7 +65,8 @@ void CodeGen::Shout(Expr& shoutStuff) {
             break;
         case (floatType):
             holdThis = symbolTable[shoutStuff.tableEntryIndex];
-            Generate("WRF    ", holdThis.getName(), "");
+            IntToAlpha(holdThis.getRelAddress(), val);
+            Generate("WRF    ", " +" + val + "(R15)" , "");
             break;
         case (boolType):
             holdThis = symbolTable[shoutStuff.tableEntryIndex];
@@ -66,34 +85,119 @@ void CodeGen::Shout(Expr& shoutStuff) {
             break;
         case (cheeseType):
             holdThis = symbolTable[shoutStuff.tableEntryIndex];
-            Generate("WRST    ", holdThis.getName(), "");
+            IntToAlpha(holdThis.getRelAddress(), val);
+            Generate("WRST    ", " +" + val + "(R15)", "");
             break;
         case (IDType):
             holdThis = symbolTable[shoutStuff.tableEntryIndex];
+            if (holdThis.getHipHip()){
+                if (shoutStuff.hiphipIndex){
 
-            switch (holdThis.getDataType()){
-                case (integer):
-                    Generate("WRI    ", holdThis.getName(), "");
-                    break;
-                case (floating):
-                    Generate("WRF    ", holdThis.getName(), "");
-                    break;
-                case (cheese):
-                    Generate("WRST    ", holdThis.getName(), "");
-                    break;
-                case (boolean):
-                    booShout = getCurrentBoolShoutName();
-                    Generate("LD    ", "R0", holdThis.getName());
-                    Generate("LD    ", "R2", "#0");
-                    Generate("IC    ", "R0", "R2");
-                    Generate("JNE    ", booShout, "");
-                    Generate("WRST    ", "FBOOL", "");
-                    Generate("LABEL    ", booShout, "");
-                    Generate("JMP    ", booShout + "END", "");
-                    Generate("LABEL    ", booShout, "");
-                    Generate("WRST    ", "TBOOL", "");
-                    Generate("LABEL    ", booShout +"END", "");
-                    break;
+                    switch (holdThis.getDataType()) {// shouting a hip hip with index
+                        case (integer):
+
+                            IntToAlpha(holdThis.getRelAddress(), val);
+                            Generate("LD    ", "R6", " #" + val);
+                            IntToAlpha(2, val);
+                            Generate("LD    ", "R8", " #" + val);
+                            Generate("IM    ", "R8", "R10");
+                            Generate("IA    ", "R6", "R8");
+                            Generate("IA    ", "R6", " +0(R15)");
+                            Generate("WRI ", "+0(R6)", "");
+                            break;
+                        case (floating):
+                            IntToAlpha(holdThis.getRelAddress(), val);
+                            Generate("LD    ", "R6", " #" + val);
+                            IntToAlpha(4, val);
+                            Generate("LD    ", "R8", " #" + val);
+                            Generate("IM    ", "R8", "R10");
+                            Generate("IA    ", "R6", "R8");
+                            Generate("IA    ", "R6", "+0(R15)");
+                            Generate("WRF ", "+0(R6)", "");
+                            break;
+                        case (cheese):
+                            IntToAlpha(holdThis.getRelAddress(), val);
+                            Generate("LD    ", "R6", " #" + val);
+                            IntToAlpha(holdThis.getStrSize(), val);
+                            Generate("LD    ", "R8", " #" + val);
+                            Generate("IM    ", "R8", " R10");
+                            Generate("IA    ", "R6", " R10");
+                            Generate("IA    ", "R6", " +0(R15)");
+                            Generate("WRST    ", "+0(R6)", "");
+                            break;
+                        case (boolean):
+                            booShout = getCurrentBoolShoutName();
+                            IntToAlpha(holdThis.getRelAddress(), val);
+                            Generate("LD    ", "R0", " +" + val + "(R15)");
+                            Generate("LD    ", "R2", "#0");
+                            Generate("IC    ", "R0", "R2");
+                            Generate("JNE    ", booShout, "");
+                            Generate("WRST    ", "FBOOL", "");
+                            Generate("LABEL    ", booShout, "");
+                            Generate("JMP    ", booShout + "END", "");
+                            Generate("LABEL    ", booShout, "");
+                            Generate("WRST    ", "TBOOL", "");
+                            Generate("LABEL    ", booShout + "END", "");
+                            break;
+                    }
+                } else {
+                    for (int i = 0; i < holdThis.getNumComponents(); i++) {//shouting hiphip without index (shouts all)
+                        IntToAlpha(holdThis.getRelAddress(), val);
+                        switch (holdThis.getDataType()) {
+                            case (integer):
+                                Generate("WRI    ", " +" + val + "(R15)", "");
+                                break;
+                            case (floating):
+                                Generate("WRF    ", " +" + val + "(R15)", "");
+                                break;
+                            case (cheese):
+                                Generate("WRST    ", " +" + val + "(R15)", "");
+                                break;
+                            case (boolean):
+                                booShout = getCurrentBoolShoutName();
+                                IntToAlpha(holdThis.getRelAddress(), val);
+                                Generate("LD    ", "R0", " +" + val + "(R15)");
+                                Generate("LD    ", "R2", "#0");
+                                Generate("IC    ", "R0", "R2");
+                                Generate("JNE    ", booShout, "");
+                                Generate("WRST    ", "FBOOL", "");
+                                Generate("LABEL    ", booShout, "");
+                                Generate("JMP    ", booShout + "END", "");
+                                Generate("LABEL    ", booShout, "");
+                                Generate("WRST    ", "TBOOL", "");
+                                Generate("LABEL    ", booShout + "END", "");
+                                break;
+                        }
+                    }
+                }
+
+            } else {
+                IntToAlpha(holdThis.getRelAddress(), val);
+                switch (holdThis.getDataType()) {//shouting ID that is not hiphip
+                    case (integer):
+                        Generate("WRI    ", " +" + val + "(R15)", "");
+                        break;
+                    case (floating):
+                        Generate("WRF    ", " +" + val + "(R15)", "");
+                        break;
+                    case (cheese):
+                        Generate("WRST    ", " +" + val + "(R15)", "");
+                        break;
+                    case (boolean):
+                        booShout = getCurrentBoolShoutName();
+                        IntToAlpha(holdThis.getRelAddress(), val);
+                        Generate("LD    ", "R0", " +" + val + "(R15)");
+                        Generate("LD    ", "R2", "#0");
+                        Generate("IC    ", "R0", "R2");
+                        Generate("JNE    ", booShout, "");
+                        Generate("WRST    ", "FBOOL", "");
+                        Generate("LABEL    ", booShout, "");
+                        Generate("JMP    ", booShout + "END", "");
+                        Generate("LABEL    ", booShout, "");
+                        Generate("WRST    ", "TBOOL", "");
+                        Generate("LABEL    ", booShout + "END", "");
+                        break;
+                }
             }
             break;
         default:
@@ -106,6 +210,7 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
     symbolTableEntries temp = symbolTableEntries();
     temp.setName(scan.tokenBuffer.data());
     int Cheese_Size_Temp = 1024;
+    string val;
     switch (type) {
         case (intType):
             ///set up array of ints
@@ -117,7 +222,8 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
                 CheckId(temp);
                 for(int i = 0; i < HipHip_Size; i++){
                     Generate("LD    ", "R0", "NINT");
-                    Generate("STO    ", "R0", temp.getRelAddress()+(i*2)+"(R15)");
+                    IntToAlpha((temp.getRelAddress() + (i * 2)), val);
+                    Generate("STO    ", "R0", " +" + val + "(R15)");
                 }
                 break;
             }
@@ -125,7 +231,8 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
             temp.setRelAddress(calcNewRelativeAddress());
             CheckId(temp);
             Generate("LD    ", "R0", "NINT");
-            Generate("STO    ", "R0", temp.getRelAddress()+"(R15)");
+            IntToAlpha(temp.getRelAddress(), val);
+            Generate("STO    ", "R0", " +" + val + "(R15)");
             break;
         case (floatType):
             ///set up array of floats
@@ -136,8 +243,11 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
                 temp.setNumComponents(HipHip_Size);
                 CheckId(temp);
                 for(int i = 0; i < HipHip_Size; i++){
-                    Generate("LDA    ", "R0", "NREAL");//TODO fix this
-                    Generate("STO    ", "R0", temp.getRelAddress()+(i*4)+"(R15)");
+                    Generate("LDA    ", "R0", "NREAL");
+                    IntToAlpha(4, val);
+                    Generate("LD    ", "R1", " #" +val);
+                    IntToAlpha((temp.getRelAddress() + (i * 4)), val);
+                    Generate("BKT    ", "R0", " +" + val + "(R15)");
                 }
                 break;
             }
@@ -145,7 +255,10 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
             temp.setRelAddress(calcNewRelativeAddress());
             CheckId(temp);
             Generate("LD    ", "R0", "NREAL");
-            Generate("STO    ", "R0", temp.getRelAddress()+"(R15)");
+            IntToAlpha(4, val);
+            Generate("LD    ", "R1", " #" +val);
+            IntToAlpha(temp.getRelAddress(), val);
+            Generate("STO    ", "R0", " +" + val + "(R15)");
             break;
         case (boolType):
             ///set up array of float
@@ -180,7 +293,10 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
                 CheckId(temp);
                 for(int i = 0; i < HipHip_Size; i++){
                     Generate("LD    ", "R0", "NSTRING");//TODO FIX this
-                    Generate("STO    ", "R0", temp.getRelAddress()+(i*Cheese_Size_Temp)+"(R15)");
+                    IntToAlpha(1, val);
+                    Generate("LD    ", "R1", " #" +val);
+                    IntToAlpha((temp.getRelAddress() + (i * Cheese_Size_Temp)), val);
+                    Generate("BKT    ", "R0", " +" + val + "(R15)");
                 }
                 break;
             }
@@ -189,9 +305,13 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
             temp.setStrSize(Cheese_Size_Temp);
             CheckId(temp);
             Generate("LD    ", "R0", "NSTRING");
-            Generate("STO    ", "R0", temp.getRelAddress()+"(R15)");
+            IntToAlpha(1, val);
+            Generate("LD    ", "R1", " #" +val);
+            IntToAlpha(temp.getRelAddress(), val);
+            Generate("BKT    ", "R0", " +" + val + "(R15)");
             break;
     }
+    LookUp(temp);
 }
 
 string CodeGen::getCurrentTempName() {
@@ -236,11 +356,10 @@ void CodeGen::Listen(const Expr &InExpr) {
 }
 
 void CodeGen::ProcessVar(Expr &e) {
-    string varName = scan.tokenBuffer;
-    int index = getSymbolTableIndex(varName);
+    int index = getSymbolTableIndex(e.ID);
     if (index >= 0){
-        e.ID = varName;
         e.tableEntryIndex = index;
+        e.theType = IDType;
     } else {
         //TODO error stuff
     }
@@ -279,9 +398,10 @@ void CodeGen::ProcessLit(Expr& expr) {
                 IntToAlpha(tStringVal,val);
                 string tString = "STEMP" + val;
                 Generate("LDA    ", "R0", tString );
-                Generate("LD    ", "R1", "#" + to_string(stringValues[stringValues.size()-1].size()));
-                Generate("BKT    ", "R0", tempEntry.getName());
-
+                IntToAlpha(stringValues[stringValues.size()-1].size(), val);
+                Generate("LD    ", "R1", "#" + val);
+                IntToAlpha(tempEntry.getRelAddress(), val);
+                Generate("BKT    ", "R0", " +" + val + "(R15)");
             } else if (expr.theType == floatType){
                 int tFloatVal = floatingValues.size();
                 floatingValues.push_back(atof(scan.tokenBuffer.data()));
@@ -290,7 +410,8 @@ void CodeGen::ProcessLit(Expr& expr) {
                 string fString = "FTEMP" + val;
                 Generate("LDA    ", "R0", fString);
                 Generate("LD    ", "R1", "#4");
-                Generate("BKT    ", "R0", tempEntry.getName());
+                IntToAlpha(tempEntry.getRelAddress(), val);
+                Generate("BKT    ", "R0", " +" + val + "(R15)");
             }
             expr.tableEntryIndex = symbolTable.size();
             symbolTable.push_back(tempEntry);
@@ -298,6 +419,13 @@ void CodeGen::ProcessLit(Expr& expr) {
         default:
             break;
     }
+}
+
+int CodeGen::oneOrTwo(int size) {
+    if ((size % 2) == 0) {
+        return 2;
+    }
+    return 1;
 }
 
 bool CodeGen::LookUp(const symbolTableEntries &s) {
@@ -311,9 +439,9 @@ bool CodeGen::LookUp(const symbolTableEntries &s) {
 }
 
 int CodeGen::getSymbolTableIndex(const string s) {
-    for (unsigned i = 0; i < symbolTable.size(); i++)
+    for (int i = 0; i < symbolTable.size(); i++)
     {
-        if (symbolTable[i].getName() == s){
+        if (symbolTable[i].getName().compare(s) == 0){
             return i;
         }
     }
@@ -466,7 +594,7 @@ void CodeGen::makeItLowerCase(string &doIt) {
 void CodeGen::genSymbolTableStuff() {
     for (int i = 0; i < symbolTable.size(); i++){
         symbolTableEntries temp = symbolTable[i];
-        Generate("LABEL    ", temp.getName(), "");
+        // Generate("LABEL    ", temp.getName(), "");
         switch(temp.getDataType()){
             case(integer):
 
@@ -525,6 +653,8 @@ void CodeGen::Finish()
     Generate("STRING    ", "\"FALSE\"", "");
     Generate("LABEL    ", "TBOOL", "");
     Generate("STRING    ", "\"TRUE\"", "");
+    Generate("LABEL    ", "BIGEMPT", "");
+    Generate("SKIP    ", "1024", "");
     genFloatStatements();
     genStringStatements();
     outFile.close();
@@ -578,9 +708,138 @@ void CodeGen::Start()
 }
 void CodeGen::Assign(Expr &Assign, Expr &AssignTail){
     symbolTableEntries A = symbolTable[Assign.tableEntryIndex]; //left of the assignment
-    symbolTableEntries t = symbolTable[AssignTail.tableEntryIndex]; //right of the assignment
-    Generate("LD ", "R0", t.getRelAddress()+"(R15)");
-    Generate("STO ", "R0", A.getRelAddress()+"(R15)");
+    string val;
+    if (AssignTail.theType == intType){//working with int literal assignment
+        if (A.getDataType() == integer) {
+            IntToAlpha(AssignTail.intVal, val);
+            Generate("LD    ", "R0", "#" + val);
+            if (A.getHipHip()) {
+                IntToAlpha(A.getRelAddress(), val);
+                Generate("LD    ", "R6", " #" + val);
+                IntToAlpha(2, val);
+                Generate("LD    ", "R8", " #" + val);
+                Generate("IM    ", "R8", "R10");
+                Generate("IA    ", "R6", "R8");
+                Generate("IA    ", "R6", " +0(R15)");
+                Generate("STO ", "R0", " +(R6)");
+            } else {
+                IntToAlpha(A.getRelAddress(), val);
+                Generate("STO    ", "R0", " +" + val + "(R15)");
+            }
+        } else {
+            //TODO semantics error
+        }
+    } else {//other assignments
+        symbolTableEntries t = symbolTable[AssignTail.tableEntryIndex];
+        if (t.getDataType() != A.getDataType()) {
+            //TODO semantics error
+        } else {
+
+            if (A.getHipHip()) {//assign to hiphip locations
+                switch (t.getDataType()) {
+                    case (integer):
+                        IntToAlpha(t.getRelAddress(), val);
+                        Generate("LD    ", "R0", " +" + val + "(R15)");
+                        IntToAlpha(A.getRelAddress(), val);
+                        Generate("LD    ", "R6", " #" + val);
+                        IntToAlpha(2, val);
+                        Generate("LD    ", "R8", " #" + val);
+                        Generate("IM    ", "R8", "R10");
+                        Generate("IA    ", "R6", "R8");
+                        Generate("IA    ", "R6", " +(R15)");
+                        Generate("STO ", "R0", " +(R6)");
+                        break;
+                    case (floating):
+                        IntToAlpha(t.getRelAddress(), val);
+                        Generate("LDA    ", "R0", " +" + val + "(R15)");
+                        Generate("LD    ", "R1", "#4");
+                        IntToAlpha(A.getRelAddress(), val);
+                        Generate("LD    ", "R6", " #" + val);
+                        IntToAlpha(4, val);
+                        Generate("LD    ", "R8", " #" + val);
+                        Generate("IM    ", "R8", "R10");
+                        Generate("IA    ", "R6", "R8");
+                        Generate("IA    ", "R6", " +0(R15)");
+                        Generate("BKT ", "R0", " +(R6)");
+                        break;
+                    case (cheese):
+                        IntToAlpha((t.getRelAddress()), val);
+                        Generate("LDA    ", "R0", " +" + val + "(R15)");
+                        if (A.getStrSize() < t.getStrSize()) {
+                            IntToAlpha(A.getStrSize(), val);
+                        } else {
+                            IntToAlpha(t.getStrSize(), val);
+                        }
+                        Generate("LD    ", "R1", "#" + val);
+                        IntToAlpha(A.getStrSize(), val);
+                        Generate("LD    ", "R8", " #" + val);
+                        IntToAlpha(A.getRelAddress(), val);
+                        Generate("LD    ", "R6", " #" + val);
+                        Generate("IM    ", "R8", "R10");
+                        Generate("IA    ", "R6", "R8");
+                        Generate("IA    ", "R6", " +0(R15)");
+                        Generate("BKT    ", "R0", " +0(R6)");
+                        Generate("LDA    ", "R0", "BIGEMPT");
+                        if (A.getStrSize() > t.getStrSize()) {
+                            IntToAlpha((A.getStrSize() - t.getStrSize()), val);
+                            Generate("LD    ", "R1", "#" + val);
+                            IntToAlpha(A.getRelAddress() + t.getStrSize(), val);
+                            Generate("BKT    ", "R0", " +0(R6)");
+                        }
+                        break;
+                    case (boolean):
+                        IntToAlpha(t.getRelAddress(), val);
+                        Generate("LD    ", "R0", " +" + val + "(R15)");
+                        IntToAlpha(A.getRelAddress(), val);
+                        Generate("STO ", "R0", " +" + val + "(R15)");
+                        break;
+                }
+
+            }else {//assign to not hiphip locations
+                switch (t.getDataType()) {
+                    case (integer):
+                        IntToAlpha(t.getRelAddress(), val);
+                        Generate("LD    ", "R0", " +" + val + "(R15)");
+                        IntToAlpha(A.getRelAddress(), val);
+                        Generate("STO ", "R0", " +" + val + "(R15)");
+                        break;
+                    case (floating):
+                        IntToAlpha(t.getRelAddress(), val);
+                        Generate("LDA    ", "R0", " +" + val + "(R15)");
+                        Generate("LD    ", "R1", "#4");
+                        IntToAlpha(A.getRelAddress(), val);
+                        Generate("BKT    ", "R0", " +" + val + "(R15)");
+                        break;
+                    case (cheese):
+                        IntToAlpha((t.getRelAddress()), val);
+                        Generate("LDA    ", "R0", " +" + val + "(R15)");
+                        if (A.getStrSize() < t.getStrSize()) {
+                            IntToAlpha(A.getStrSize(), val);
+                        } else {
+                            IntToAlpha(t.getStrSize(), val);
+                        }
+                        Generate("LD    ", "R1", "#" + val);
+                        IntToAlpha(A.getRelAddress(), val);
+                        Generate("BKT    ", "R0", " +" + val + "(R15)");
+                        Generate("LDA    ", "R0", "BIGEMPT");
+                        if (A.getStrSize() > t.getStrSize()) {
+                            IntToAlpha((A.getStrSize() - t.getStrSize()), val);
+                            Generate("LD    ", "R1", "#" + val);
+                            IntToAlpha(A.getRelAddress() + t.getStrSize(), val);
+                            Generate("BKT    ", "R0", " +" + val + "(R15)");
+                        }
+                        break;
+                    case (boolean):
+                        IntToAlpha(t.getRelAddress(), val);
+                        Generate("LD    ", "R0", " +" + val + "(R15)");
+                        IntToAlpha(A.getRelAddress(), val);
+                        Generate("STO ", "R0", " +" + val + "(R15)");
+                        break;
+                }
+            }
+        }
+    } //right of the assignment
+
 }
 
 void CodeGen::ProcessOp(OpRec& op)

@@ -103,7 +103,7 @@ private:
 
 	void ItemList();
 
-	void VariableTail();
+	void VariableTail(Expr& expr);
 
 	void VarListTail();
 
@@ -115,7 +115,7 @@ private:
 
 	void AssignTail(Expr & assignTailExpr);
 
-	void Variable();
+	void Variable(Expr& expr);
 
 	void BreakStmt();
 
