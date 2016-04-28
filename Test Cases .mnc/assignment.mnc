@@ -1,3 +1,10 @@
 decs{
     int: x;
 }
+shout x;
+x = 128;
+shout x;
+x = 222;
+shout x;
+x = 0;
+shout x;
