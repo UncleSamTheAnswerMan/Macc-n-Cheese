@@ -121,7 +121,7 @@ void CodeGen::Shout(Expr& shoutStuff) {
                             IntToAlpha(holdThis.getStrSize(), val);
                             Generate("LD    ", "R8", " #" + val);
                             Generate("IM    ", "R8", " R10");
-                            Generate("IA    ", "R6", " R10");
+                            Generate("IA    ", "R6", " R8");
                             Generate("IA    ", "R6", " +0(R15)");
                             Generate("WRST    ", "+0(R6)", "");
                             break;
@@ -284,6 +284,7 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
             if(Cheese_Size > 0){
                 Cheese_Size_Temp = Cheese_Size;
             }
+            Cheese_Size_Temp++;
             if (HipOrNah){
                 temp.setDataType(cheese);
                 temp.setRelAddress(calcNewRelativeAddress());
@@ -344,13 +345,13 @@ void CodeGen::Listen(const Expr &InExpr) {
     string address = to_string(entry.getRelAddress());
     switch (entry.getDataType()){
         case (floating):
-            Generate("RDF    ", address + "(R15)", "");
+            Generate("RDF    ", " +" + address + "(R15)", "");
             break;
         case (integer):
-            Generate("RDI    ", address + "(R15)", "");
+            Generate("RDI    ", " +" + address + "(R15)", "");
             break;
         case (cheese):
-            Generate("RDST    ", address + "(R15)", "");
+            Generate("RDST    ", " +" + address + "(R15)", "");
             break;
     }
 }
@@ -394,14 +395,19 @@ void CodeGen::ProcessLit(Expr& expr) {
                 int tStringVal = stringValues.size();
                 stringValues.push_back(scan.stringBuffer);
                 tempEntry.setDataType(cheese);
-                tempEntry.setStrSize(stringValues[stringValues.size()-1].size());
+                tempEntry.setStrSize(stringValues[stringValues.size() - 1].size() + 1);
                 IntToAlpha(tStringVal,val);
                 string tString = "STEMP" + val;
                 Generate("LDA    ", "R0", tString );
-                IntToAlpha(stringValues[stringValues.size()-1].size(), val);
+                IntToAlpha(stringValues[stringValues.size() - 1].size(), val);
                 Generate("LD    ", "R1", "#" + val);
                 IntToAlpha(tempEntry.getRelAddress(), val);
                 Generate("BKT    ", "R0", " +" + val + "(R15)");
+                Generate("LDA    ", "R0", " BIGEMPT");
+                Generate("LD    ", "R1", " #1");
+                IntToAlpha(tempEntry.getRelAddress() + stringValues[stringValues.size() - 1].size(), val);
+                Generate("BKT    ", "R0", " +" + val + "(R15)");
+
             } else if (expr.theType == floatType){
                 int tFloatVal = floatingValues.size();
                 floatingValues.push_back(atof(scan.tokenBuffer.data()));
@@ -765,10 +771,10 @@ void CodeGen::Assign(Expr &Assign, Expr &AssignTail){
                     case (cheese):
                         IntToAlpha((t.getRelAddress()), val);
                         Generate("LDA    ", "R0", " +" + val + "(R15)");
-                        if (A.getStrSize() < t.getStrSize()) {
-                            IntToAlpha(A.getStrSize(), val);
+                        if ((A.getStrSize() - 1) < (t.getStrSize() - 1)) {
+                            IntToAlpha(A.getStrSize() - 1, val);
                         } else {
-                            IntToAlpha(t.getStrSize(), val);
+                            IntToAlpha(t.getStrSize() - 1, val);//if broken change this and cheese lit in processLit
                         }
                         Generate("LD    ", "R1", "#" + val);
                         IntToAlpha(A.getStrSize(), val);
@@ -780,11 +786,15 @@ void CodeGen::Assign(Expr &Assign, Expr &AssignTail){
                         Generate("IA    ", "R6", " +0(R15)");
                         Generate("BKT    ", "R0", " +0(R6)");
                         Generate("LDA    ", "R0", "BIGEMPT");
-                        if (A.getStrSize() > t.getStrSize()) {
-                            IntToAlpha((A.getStrSize() - t.getStrSize()), val);
+                        if ((A.getStrSize()) > (t.getStrSize())) {
+                            IntToAlpha(((A.getStrSize()) - (t.getStrSize())), val);
                             Generate("LD    ", "R1", "#" + val);
-                            IntToAlpha(A.getRelAddress() + t.getStrSize(), val);
-                            Generate("BKT    ", "R0", " +0(R6)");
+                            IntToAlpha((t.getStrSize() - 1), val);
+                            Generate("BKT    ", "R0", " +" + val + "(R6)");
+                        } else {
+                            Generate("LD    ", "R1", " #1");
+                            IntToAlpha(A.getStrSize() - 1, val);
+                            Generate("BKT    ", "R0", " +" + val + "(R6)");
                         }
                         break;
                     case (boolean):
@@ -814,9 +824,9 @@ void CodeGen::Assign(Expr &Assign, Expr &AssignTail){
                         IntToAlpha((t.getRelAddress()), val);
                         Generate("LDA    ", "R0", " +" + val + "(R15)");
                         if (A.getStrSize() < t.getStrSize()) {
-                            IntToAlpha(A.getStrSize(), val);
+                            IntToAlpha(A.getStrSize() - 1, val);
                         } else {
-                            IntToAlpha(t.getStrSize(), val);
+                            IntToAlpha(t.getStrSize() - 1, val);
                         }
                         Generate("LD    ", "R1", "#" + val);
                         IntToAlpha(A.getRelAddress(), val);

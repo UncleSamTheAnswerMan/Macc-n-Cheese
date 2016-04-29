@@ -177,14 +177,35 @@ Token Scanner::GetNextToken()
 
         else if (currentChar == '"') {//string literal
             do {
+                //cout << stringBuffer << endl;
                 currentChar = NextChar();
                 c = sourceFile.peek();
                 if (currentChar == '"' && c != '"') {//" followed by not a quote
                     return CHEESE_LIT;
-                } else if (currentChar == '"' && c == '"') {//quote followed by quote (escaped quote)
-                    currentChar = NextChar();//ignore one quote because assembly escapes with :
+                } else if (currentChar == '\\') {//quote followed by quote (escaped quote)
+                    stringBuffer += ':';
+                    currentChar = NextChar();
+                    c = sourceFile.peek();
+                    if(currentChar == '\\'){
+                        stringBuffer += '\\';
+                        //currentChar = NextChar();
+                    }
+                    else if (currentChar == '"'){
+                        stringBuffer += '"';
+                        //currentChar = NextChar();
+                    }
+                    else if (currentChar == 'n'){
+                        stringBuffer += "010";
+                        //currentChar = NextChar();
+                    }
                 }
-                stringBuffer += currentChar;//add string stuff to stringBuffer
+                else if (currentChar == ':'){
+                    stringBuffer += ':';
+                    stringBuffer += currentChar;
+                }
+                else {
+                    stringBuffer += currentChar;
+                }//add string stuff to stringBuffer
 
             } while (c != '\n');//go until newLine or it hits return
         }

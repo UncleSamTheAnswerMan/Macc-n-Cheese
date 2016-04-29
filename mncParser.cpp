@@ -662,8 +662,8 @@ void Parser::VarListTail()
 	case COMMA:
 		Match(COMMA);
 		Variable(varListTailExpr);
-		//code.ProcessVar();
-		//code.Listen();
+		code.ProcessVar(varListTailExpr);
+		code.Listen(varListTailExpr);
 		VarListTail();
 		break;
 	case SEMICOLON:
@@ -677,8 +677,8 @@ void Parser::VarList()
 {
 	Expr varListExpr;
 	Variable(varListExpr);
-	//code.ProcessVar();
-	//code.Listen();
+	code.ProcessVar(varListExpr);
+	code.Listen(varListExpr);
 	VarListTail();
 }
 
