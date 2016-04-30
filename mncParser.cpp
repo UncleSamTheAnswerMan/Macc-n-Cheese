@@ -676,9 +676,13 @@ void Parser::VarListTail()
 void Parser::VarList()
 {
 	Expr varListExpr;
+	//cout << "before variable" << endl;
 	Variable(varListExpr);
+	//cout << "after variable" << endl;
 	code.ProcessVar(varListExpr);
+	//cout << "after ProcessVar" << endl;
 	code.Listen(varListExpr);
+	//cout << "after Listen" << endl;
 	VarListTail();
 }
 

@@ -280,7 +280,7 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
             Generate("LD    ", "R0", "NINT");
             Generate("STO    ", "R0", temp.getRelAddress()+"(R15)");
             break;
-        case (cheeseType):
+        case (cheeseType)://TODO need to enforce limit on string size
             if(Cheese_Size > 0){
                 Cheese_Size_Temp = Cheese_Size;
             }
@@ -343,16 +343,29 @@ void CodeGen::ExtractExpr(const Expr &e, string &s) {
 void CodeGen::Listen(const Expr &InExpr) {
     symbolTableEntries entry = symbolTable[InExpr.tableEntryIndex];
     string address = to_string(entry.getRelAddress());
-    switch (entry.getDataType()){
-        case (floating):
-            Generate("RDF    ", " +" + address + "(R15)", "");
-            break;
-        case (integer):
-            Generate("RDI    ", " +" + address + "(R15)", "");
-            break;
-        case (cheese):
-            Generate("RDST    ", " +" + address + "(R15)", "");
-            break;
+    if(entry.getHipHip()){
+    //TODO error probably
+    } else {
+        switch (entry.getDataType()){
+            case (floating):
+                Generate("RDF    ", " +" + address + "(R15)", "");
+                break;
+            case (integer):
+                Generate("RDI    ", " +" + address + "(R15)", "");
+                break;
+            case (cheese):
+                if (entry.getStrSize() >= 1024){
+                    Generate("RDST    ", " +" + address + "(R15)", "");\
+            } else {
+                    for (int i = 0; i < entry.getStrSize() - 1; i++) {
+                        string address = to_string(entry.getRelAddress() + i);
+                        Generate("RDCH    ", " +" + address + "(R15)", "");
+                    }
+                    Generate("RDNL    ", "", "");
+                }
+
+                break;
+        }
     }
 }
 
