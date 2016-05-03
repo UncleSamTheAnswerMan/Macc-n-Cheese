@@ -69,7 +69,7 @@ private:
 
 	void RelOp();
 
-	void CondTail();
+	void CondTail(Oprec& opRec);
 
 	void IntListTail();
 
@@ -85,7 +85,7 @@ private:
 
 	void ElseClause();
 
-	void Condition();
+	void Condition(OpRec& opRec);
 
 	void VarDecs();
 
@@ -97,7 +97,7 @@ private:
 
 	void LoopStmt();
 
-	void IfStmt();
+	void IfStmt(OpRec& opRec);
 
 	void ItemListTail();
 

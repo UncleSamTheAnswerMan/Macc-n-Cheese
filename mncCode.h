@@ -65,10 +65,6 @@ public:
     // Converts the literal found in the token buffer into numeric form
     // and builds a corresponding semantic record e.
 
-    //void ProcessOp(OpRec& o);
-    // Produces an operator descriptor O for the operator in the token
-    // buffer.
-
     void Listen(const Expr& InExpr);
     //Produces the assembly code for reading a value for InExpr.
 
@@ -80,10 +76,10 @@ public:
     void ProcessOp(OpRec& op);
     //Boolean expression evaluation
 
-    void IfThen(Expr &expr);
+    void IfThen(OpRec& opRec);
     //Produces the assembly code to handle an if-then statement
 
-    void IfEnd();
+    void IfEnd(bool& isElse);
     //Produces the assembly code to handle the end of an if statement
 
     void IfElse();
@@ -95,6 +91,8 @@ public:
     ///Takes the variable and the value it is assigned and generates the code for assembly.
 
     static void makeItLowerCase(string& doIt);
+
+    void setCondition(OpRec opRec);
 
 private:
     vector<symbolTableEntries> symbolTable;
@@ -111,6 +109,7 @@ private:
     int maxFloat;
     int maxString;
     int maxBoolShout;
+    int ifElseEndNum;
 
 //    static map<string,int> HipHiplength;
 //    static map<string,int> Cheeselength;
@@ -145,6 +144,10 @@ private:
 
     void createSymbolTableEntry(Expr& expr);//creates a symbolTableEntries object and places into symbolTable
 
+    string getCurrentEndNumber(); //For jumping to the end of if statements
+
+    string getCurrentElseNumber();
+
 
     void CheckId(const symbolTableEntries & s);
 //     Declares s as a new variable and enters it into the symbol table when s
@@ -155,9 +158,6 @@ private:
 
     void ExtractExpr(const Expr & e, string& s);
     // Returns an operand representation s for the expression e.
-
-    //string ExtractOp(const OpRec& o);
-    // Returns a representation for the operator o.
 
     void Generate(const string & s1, const string & s2, const string & s3);
     // Produces the SAM assembly code for one or two operand instructions.

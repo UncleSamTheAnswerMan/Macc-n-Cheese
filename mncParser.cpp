@@ -401,7 +401,7 @@ void Parser::RelOp()
 	}
 }
 
-void Parser::CondTail()
+void Parser::CondTail(OpRec& opRec)
 {
     Expr condTailExpr;
 	switch (NextToken())
@@ -414,8 +414,10 @@ void Parser::CondTail()
 	case EQ_OP2:
 	case NE_OP:
 		RelOp();
-		// code.ProcessOp();
+		code.ProcessOp(opRec);
 		Expression(condTailExpr);
+		opRec.rightSide = condTailExpr;
+
 		break;
 	case RBANANA:
 	case SEMICOLON:
@@ -489,13 +491,15 @@ void Parser::ForAssign()
 	// code.ForAssign();
 }
 
-void Parser::ElseClause()
+void Parser::ElseClause(bool& isElse)
 {
 	switch (NextToken())
 	{
 	case ELSE_SYM:
 		Match(ELSE_SYM);
-		// code.IfElse();
+		isElse = true;
+			//set variable to truuuuue and pass it into ifend
+		code.IfElse();
 		StmtList();
 		break;
 	case END_SYM:
@@ -505,12 +509,13 @@ void Parser::ElseClause()
 	}
 }
 
-void Parser::Condition()
+void Parser::Condition(Oprec& opRec)
 {
     Expr condExpr;
 	Expression(condExpr);
-	CondTail();
-	// code.SetCondition();
+	opRec.leftSide = condExpr;
+	CondTail(opRec);
+	code.SetCondition(opRec);
 }
 
 void Parser::VarDecs()
@@ -583,15 +588,17 @@ void Parser::LoopStmt()
 
 void Parser::IfStmt()
 {
+	bool isThereAnElse;
+	OpRec ifOpRec;
 	Match(IF_SYM);
 	Match(LBANANA);
-	Condition();
+	Condition(ifOpRec);
 	Match(RBANANA);
-	// code.IfThen();
+	code.IfThen(OpRec& opRec);
 	StmtList();
-	ElseClause();
+	ElseClause(isThereAnElse);
 	Match(END_SYM);
-	// code.IfEnd();
+	code.IfEnd(isThereAnElse);
 }
 
 void Parser::ItemListTail()
@@ -694,7 +701,7 @@ void Parser::InitList()
 }
 
 void Parser::Expression(Expr& expr)
-{
+{  //TODO set up opRec and make result be an expr that's passed back up
 	Factor(expr);
 	ExprTail();
 }

@@ -26,6 +26,7 @@ CodeGen::CodeGen()
     maxFloat = 0;
     maxString = 0;
     maxBoolShout = 0;
+    ifElseEndNum = 0;
 }
 
 string CodeGen::getCurrentBoolShoutName() {
@@ -35,6 +36,23 @@ string CodeGen::getCurrentBoolShoutName() {
     maxBoolShout++;
     return (temp+val);
 }
+
+string CodeGen::getCurrentEndNumber(){
+    string val;
+    string temp = "IFEND";
+    IntToAlpha(ifElseEndNum, val);
+    ifElseEndNum++;
+    return (temp+val);
+}
+
+string CodeGen::getCurrentElseNumber(){
+    string val;
+    string temp = "ELSE";
+    IntToAlpha(ifElseEndNum, val);
+    return (temp+val);
+}
+
+
 
 void CodeGen::HipHipIndex(Expr &hiphip, Expr &index) {
     symbolTableEntries temp;
@@ -551,23 +569,32 @@ int CodeGen::calcNewRelativeAddress() {
 }
 
 void CodeGen::IfElse() {
-    //Code code code code code
-    Generate("LABEL    ", "IFELSE", "");
+    //If there is an else clause
+    string theElse = getCurrentElseNumber();
+    Generate("LABEL    ", theElse, "");
 }
 
-void CodeGen::IfThen(Expr &expr) {
-    //Code code code codey codey code code
-    //If condition isn't met either jump to the else if there is one or
-    //jump to the end
+void CodeGen::IfThen(OpRec& opRec) {
+    //If condition isn't met either jump to the end or out of loop
 
-    Generate("JMP    ","IFELSE","");
+    string jumpToEnd = getCurrentEndNumber();
+    Generate("JMP    ", jumpToEnd, "");
 }
 
-void CodeGen::IfEnd() {
+void CodeGen::IfEnd(bool& isElse) {
     //Codey codedly code code stuff
-    //if it's not going to do what's in the if, jump to the end
-    //generate a label
-    Generate("LABEL    ", "IFEND", "");
+    string end;
+    string jumpToElse = getCurrentElseNumber();
+    IntToAlpha(ifElseEndNum, end); //use getCurrentElseNumber because we don't want to increment it again
+    Generate("LABEL    ", "IFEND" + end, "");
+    if (isElse){
+        Generate("JMP    ", jumpToElse, "");
+    }
+}
+
+void CodeGen::setCondition(OpRec opRec) {
+
+
 }
 
 void CodeGen::genFloatStatements() {
