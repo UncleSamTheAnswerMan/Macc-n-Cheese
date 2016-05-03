@@ -102,7 +102,7 @@ void CodeGen::Shout(Expr& shoutStuff) {
                             Generate("LD    ", "R8", " #" + val);
                             Generate("IM    ", "R8", "R10");
                             Generate("IA    ", "R6", "R8");
-                            Generate("IA    ", "R6", " +0(R15)");
+                            Generate("IA    ", "R6", " R15");
                             Generate("WRI ", "+0(R6)", "");
                             break;
                         case (floating):
@@ -112,7 +112,7 @@ void CodeGen::Shout(Expr& shoutStuff) {
                             Generate("LD    ", "R8", " #" + val);
                             Generate("IM    ", "R8", "R10");
                             Generate("IA    ", "R6", "R8");
-                            Generate("IA    ", "R6", "+0(R15)");
+                            Generate("IA    ", "R6", "R15");
                             Generate("WRF ", "+0(R6)", "");
                             break;
                         case (cheese):
@@ -122,10 +122,60 @@ void CodeGen::Shout(Expr& shoutStuff) {
                             Generate("LD    ", "R8", " #" + val);
                             Generate("IM    ", "R8", " R10");
                             Generate("IA    ", "R6", " R8");
-                            Generate("IA    ", "R6", " +0(R15)");
+                            Generate("IA    ", "R6", " R15");
                             Generate("WRST    ", "+0(R6)", "");
                             break;
                         case (boolean):
+                            IntToAlpha(holdThis.getRelAddress(), val);
+                            Generate("LD    ", "R6", " #" + val);
+                            IntToAlpha(2, val);
+                            Generate("LD    ", "R8", " #" + val);
+                            Generate("IM    ", "R8", "R10");
+                            Generate("IA    ", "R6", "R8");
+                            Generate("IA    ", "R6", " R15");
+                            Generate("LD    ", "R0", " +0(R6)");
+                            Generate("LD    ", "R2", "#0");
+                            Generate("IC    ", "R0", "R2");
+                            Generate("JNE    ", booShout, "");
+                            Generate("WRST    ", "FBOOL", "");
+                            Generate("LABEL    ", booShout, "");
+                            Generate("JMP    ", booShout + "END", "");
+                            Generate("LABEL    ", booShout, "");
+                            Generate("WRST    ", "TBOOL", "");
+                            Generate("LABEL    ", booShout + "END", "");
+                            break;
+                    }
+                } else { //hiphip with no index
+                    switch (holdThis.getDataType()) {
+                        case (integer):
+                            for (int i = 0; i < holdThis.getNumComponents(); i++) {
+                                IntToAlpha(holdThis.getRelAddress() + (2 * i), val);
+                                Generate("WRI    ", " +" + val + "(R15)", "");
+                                if (i != holdThis.getNumComponents()-1){
+                                    Generate("WRNL", "", "");
+                                }
+                            }
+                            break;
+                        case (floating):
+                            for (int i = 0; i < holdThis.getNumComponents(); i++) {
+                                cout << "Write float" << endl;
+                                IntToAlpha(holdThis.getRelAddress() + (4 * i), val);
+                                Generate("WRF    ", " +" + val + "(R15)", "");
+                                if (i != holdThis.getNumComponents()-1){
+                                    Generate("WRNL", "", "");
+                                }
+                            }
+                            break;
+                        case (cheese):
+                            for (int i = 0; i < holdThis.getNumComponents(); i++) {
+                                IntToAlpha(holdThis.getRelAddress() + (holdThis.getStrSize() * i), val);
+                                Generate("WRST    ", " +" + val + "(R15)", "");
+                                if (i != holdThis.getNumComponents()-1){
+                                    Generate("WRNL", "", "");
+                                }
+                            }
+                            break;
+                        case (boolean)://TODO still totes needs fixin
                             booShout = getCurrentBoolShoutName();
                             IntToAlpha(holdThis.getRelAddress(), val);
                             Generate("LD    ", "R0", " +" + val + "(R15)");
@@ -139,35 +189,6 @@ void CodeGen::Shout(Expr& shoutStuff) {
                             Generate("WRST    ", "TBOOL", "");
                             Generate("LABEL    ", booShout + "END", "");
                             break;
-                    }
-                } else {
-                    for (int i = 0; i < holdThis.getNumComponents(); i++) {//shouting hiphip without index (shouts all)
-                        IntToAlpha(holdThis.getRelAddress(), val);
-                        switch (holdThis.getDataType()) {
-                            case (integer):
-                                Generate("WRI    ", " +" + val + "(R15)", "");
-                                break;
-                            case (floating):
-                                Generate("WRF    ", " +" + val + "(R15)", "");
-                                break;
-                            case (cheese):
-                                Generate("WRST    ", " +" + val + "(R15)", "");
-                                break;
-                            case (boolean):
-                                booShout = getCurrentBoolShoutName();
-                                IntToAlpha(holdThis.getRelAddress(), val);
-                                Generate("LD    ", "R0", " +" + val + "(R15)");
-                                Generate("LD    ", "R2", "#0");
-                                Generate("IC    ", "R0", "R2");
-                                Generate("JNE    ", booShout, "");
-                                Generate("WRST    ", "FBOOL", "");
-                                Generate("LABEL    ", booShout, "");
-                                Generate("JMP    ", booShout + "END", "");
-                                Generate("LABEL    ", booShout, "");
-                                Generate("WRST    ", "TBOOL", "");
-                                Generate("LABEL    ", booShout + "END", "");
-                                break;
-                        }
                     }
                 }
 
@@ -739,7 +760,7 @@ void CodeGen::Assign(Expr &Assign, Expr &AssignTail){
                 Generate("LD    ", "R8", " #" + val);
                 Generate("IM    ", "R8", "R10");
                 Generate("IA    ", "R6", "R8");
-                Generate("IA    ", "R6", " +0(R15)");
+                Generate("IA    ", "R6", " R15");
                 Generate("STO ", "R0", " +(R6)");
             } else {
                 IntToAlpha(A.getRelAddress(), val);
@@ -765,7 +786,7 @@ void CodeGen::Assign(Expr &Assign, Expr &AssignTail){
                         Generate("LD    ", "R8", " #" + val);
                         Generate("IM    ", "R8", "R10");
                         Generate("IA    ", "R6", "R8");
-                        Generate("IA    ", "R6", " +(R15)");
+                        Generate("IA    ", "R6", " R15");
                         Generate("STO ", "R0", " +(R6)");
                         break;
                     case (floating):
@@ -778,7 +799,7 @@ void CodeGen::Assign(Expr &Assign, Expr &AssignTail){
                         Generate("LD    ", "R8", " #" + val);
                         Generate("IM    ", "R8", "R10");
                         Generate("IA    ", "R6", "R8");
-                        Generate("IA    ", "R6", " +0(R15)");
+                        Generate("IA    ", "R6", " R15");
                         Generate("BKT ", "R0", " +(R6)");
                         break;
                     case (cheese):
@@ -796,7 +817,7 @@ void CodeGen::Assign(Expr &Assign, Expr &AssignTail){
                         Generate("LD    ", "R6", " #" + val);
                         Generate("IM    ", "R8", "R10");
                         Generate("IA    ", "R6", "R8");
-                        Generate("IA    ", "R6", " +0(R15)");
+                        Generate("IA    ", "R6", " R15");
                         Generate("BKT    ", "R0", " +0(R6)");
                         Generate("LDA    ", "R0", "BIGEMPT");
                         if ((A.getStrSize()) > (t.getStrSize())) {
@@ -810,7 +831,7 @@ void CodeGen::Assign(Expr &Assign, Expr &AssignTail){
                             Generate("BKT    ", "R0", " +" + val + "(R6)");
                         }
                         break;
-                    case (boolean):
+                    case (boolean)://TODO Probs needs fixing
                         IntToAlpha(t.getRelAddress(), val);
                         Generate("LD    ", "R0", " +" + val + "(R15)");
                         IntToAlpha(A.getRelAddress(), val);
