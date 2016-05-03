@@ -269,7 +269,7 @@ void Parser::FactorTail(Expr& expr)
 		code.ProcessOp(op);
 		Primary(factorTailExpr);
 		op.rightSide = 	factorTailExpr;
-		code.GenInfix(op);
+		code.GenInfix(op, expr);
 		FactorTail(factorTailExpr);
 		break;
 	case RSTAPLE:
@@ -509,7 +509,7 @@ void Parser::ElseClause(bool& isElse)
 	}
 }
 
-void Parser::Condition(Oprec& opRec)
+void Parser::Condition(OpRec& opRec)
 {
     Expr condExpr;
 	Expression(condExpr);
@@ -546,11 +546,12 @@ void Parser::SelectStmt()
 
 void Parser::ForStmt()
 {
+	OpRec ForOp;
 	Match(FOR_SYM);
 	Match(LBANANA);
 	ForAssign();
 	Match(SEMICOLON);
-	Condition();
+	Condition(ForOp);
 	// code.ForBegin();
 	Match(SEMICOLON);
 	ForAssign();
@@ -563,9 +564,10 @@ void Parser::ForStmt()
 
 void Parser::WhileStmt()
 {
+	OpRec WhileOp;
 	Match(WHILE_SYM);
 	Match(LBANANA);
-	Condition();
+	Condition(WhileOp);
 	Match(RBANANA);
 	// code.WhileBegin();
 	StmtList();
@@ -575,12 +577,13 @@ void Parser::WhileStmt()
 
 void Parser::LoopStmt()
 {
+	OpRec loopOp;
 	Match(DO_SYM);
 	// code.LoopBegin();
 	StmtList();
 	Match(UNTIL_SYM);
 	Match(LBANANA);
-	Condition();
+	Condition(loopOp);
 	Match(RBANANA);
 	// code.LoopEnd();
 	Match(SEMICOLON);
@@ -594,7 +597,7 @@ void Parser::IfStmt()
 	Match(LBANANA);
 	Condition(ifOpRec);
 	Match(RBANANA);
-	code.IfThen(OpRec& opRec);
+	code.IfThen(ifOpRec);
 	StmtList();
 	ElseClause(isThereAnElse);
 	Match(END_SYM);

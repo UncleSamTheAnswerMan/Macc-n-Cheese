@@ -32,7 +32,7 @@ CodeGen::CodeGen()
 string CodeGen::getCurrentBoolShoutName() {
     string val;
     string temp = "BS";
-    IntToAlpha(maxBoolShout, val);
+    val = to_string(maxBoolShout);
     maxBoolShout++;
     return (temp+val);
 }
@@ -144,6 +144,7 @@ void CodeGen::Shout(Expr& shoutStuff) {
                             Generate("WRST    ", "+0(R6)", "");
                             break;
                         case (boolean):
+                            booShout = getCurrentBoolShoutName();
                             IntToAlpha(holdThis.getRelAddress(), val);
                             Generate("LD    ", "R6", " #" + val);
                             IntToAlpha(2, val);
@@ -156,7 +157,6 @@ void CodeGen::Shout(Expr& shoutStuff) {
                             Generate("IC    ", "R0", "R2");
                             Generate("JNE    ", booShout, "");
                             Generate("WRST    ", "FBOOL", "");
-                            Generate("LABEL    ", booShout, "");
                             Generate("JMP    ", booShout + "END", "");
                             Generate("LABEL    ", booShout, "");
                             Generate("WRST    ", "TBOOL", "");
@@ -193,19 +193,23 @@ void CodeGen::Shout(Expr& shoutStuff) {
                                 }
                             }
                             break;
-                        case (boolean)://TODO still totes needs fixin
-                            booShout = getCurrentBoolShoutName();
-                            IntToAlpha(holdThis.getRelAddress(), val);
-                            Generate("LD    ", "R0", " +" + val + "(R15)");
-                            Generate("LD    ", "R2", "#0");
-                            Generate("IC    ", "R0", "R2");
-                            Generate("JNE    ", booShout, "");
-                            Generate("WRST    ", "FBOOL", "");
-                            Generate("LABEL    ", booShout, "");
-                            Generate("JMP    ", booShout + "END", "");
-                            Generate("LABEL    ", booShout, "");
-                            Generate("WRST    ", "TBOOL", "");
-                            Generate("LABEL    ", booShout + "END", "");
+                        case (boolean):
+                            for (int i = 0; i < holdThis.getNumComponents(); i++) {
+                                booShout = getCurrentBoolShoutName();
+                                IntToAlpha(holdThis.getRelAddress() + (i * 2), val);
+                                Generate("LD    ", "R0", " +" + val + "(R15)");
+                                Generate("LD    ", "R2", "#0");
+                                Generate("IC    ", "R0", "R2");
+                                Generate("JNE    ", booShout, "");
+                                Generate("WRST    ", "FBOOL", "");
+                                Generate("JMP    ", booShout + "END", "");
+                                Generate("LABEL    ", booShout, "");
+                                Generate("WRST    ", "TBOOL", "");
+                                Generate("LABEL    ", booShout + "END", "");
+                                if (i != holdThis.getNumComponents()-1){
+                                    Generate("WRNL", "", "");
+                                }
+                            }
                             break;
                     }
                 }
@@ -309,7 +313,8 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
                 CheckId(temp);
                 for(int i = 0; i < HipHip_Size; i++){
                     Generate("LD    ", "R0", "NINT");
-                    Generate("STO    ", "R0", temp.getRelAddress()+(i*2)+"(R15)");
+                    IntToAlpha((temp.getRelAddress() + (i * 2)), val);
+                    Generate("STO    ", "R0", " +" + val + "(R15)");
                 }
                 break;
             }
@@ -317,9 +322,10 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
             temp.setRelAddress(calcNewRelativeAddress());
             CheckId(temp);
             Generate("LD    ", "R0", "NINT");
-            Generate("STO    ", "R0", temp.getRelAddress()+"(R15)");
+            IntToAlpha(temp.getRelAddress(), val);
+            Generate("STO    ", "R0", " +" + val + "(R15)");
             break;
-        case (cheeseType)://TODO need to enforce limit on string size
+        case (cheeseType):
             if(Cheese_Size > 0){
                 Cheese_Size_Temp = Cheese_Size;
             }
@@ -332,7 +338,7 @@ void CodeGen::DefineVar(const ExprType type, bool HipOrNah, int HipHip_Size, int
                 temp.setStrSize(Cheese_Size_Temp);
                 CheckId(temp);
                 for(int i = 0; i < HipHip_Size; i++){
-                    Generate("LD    ", "R0", "NSTRING");//TODO FIX this
+                    Generate("LD    ", "R0", "NSTRING");
                     IntToAlpha(1, val);
                     Generate("LD    ", "R1", " #" +val);
                     IntToAlpha((temp.getRelAddress() + (i * Cheese_Size_Temp)), val);
@@ -613,7 +619,7 @@ void CodeGen::IfEnd(bool& isElse) {
     }
 }
 
-void CodeGen::setCondition(OpRec opRec) {
+void CodeGen::SetCondition(OpRec opRec) {
 
 
 }
@@ -858,11 +864,17 @@ void CodeGen::Assign(Expr &Assign, Expr &AssignTail){
                             Generate("BKT    ", "R0", " +" + val + "(R6)");
                         }
                         break;
-                    case (boolean)://TODO Probs needs fixing
+                    case (boolean):
                         IntToAlpha(t.getRelAddress(), val);
                         Generate("LD    ", "R0", " +" + val + "(R15)");
                         IntToAlpha(A.getRelAddress(), val);
-                        Generate("STO ", "R0", " +" + val + "(R15)");
+                        Generate("LD    ", "R6", " #" + val);
+                        IntToAlpha(2, val);
+                        Generate("LD    ", "R8", " #" + val);
+                        Generate("IM    ", "R8", "R10");
+                        Generate("IA    ", "R6", "R8");
+                        Generate("IA    ", "R6", " R15");
+                        Generate("STO ", "R0", " +(R6)");
                         break;
                 }
 
@@ -954,7 +966,7 @@ void CodeGen::ProcessOp(OpRec& op)
     }
 }
 
-void CodeGen::GenInfix(OpRec op){
+void CodeGen::GenInfix(OpRec op, Expr& result){
 
     symbolTableEntries leftside = symbolTable[op.leftSide.tableEntryIndex];
     symbolTableEntries rightside = symbolTable[op.leftSide.tableEntryIndex];

@@ -85,14 +85,14 @@ public:
     void IfElse();
     //Produces the assembly code for if there is an else statement
 
-    void GenInfix(OpRec op);
+    void GenInfix(OpRec op, Expr& result);
 
     void Assign(Expr &Assign, Expr &AssignTail);
     ///Takes the variable and the value it is assigned and generates the code for assembly.
 
     static void makeItLowerCase(string& doIt);
 
-    void setCondition(OpRec opRec);
+    void SetCondition(OpRec opRec);
 
 private:
     vector<symbolTableEntries> symbolTable;
