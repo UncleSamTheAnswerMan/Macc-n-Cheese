@@ -96,6 +96,12 @@ public:
 
     void errorOccurred(string wheresTheError);
 
+    void LoopBegin(string& startTheLoop);
+
+    void LoopEnd(string& endTheLoop, OpRec loopOp);
+
+    string getCurrentDoUntilNum();
+
 private:
     vector<symbolTableEntries> symbolTable;
 
@@ -112,6 +118,7 @@ private:
     int maxString;
     int maxBoolShout;
     int ifElseEndNum;
+    int doUntilNum;
 
 //    static map<string,int> HipHiplength;
 //    static map<string,int> Cheeselength;

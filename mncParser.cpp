@@ -581,14 +581,15 @@ void Parser::WhileStmt()
 void Parser::LoopStmt()
 {
 	OpRec loopOp;
+	string loopLabel;
 	Match(DO_SYM);
-	// code.LoopBegin();
+	code.LoopBegin(loopLabel);
 	StmtList();
 	Match(UNTIL_SYM);
 	Match(LBANANA);
 	Condition(loopOp);
 	Match(RBANANA);
-	// code.LoopEnd();
+	code.LoopEnd(loopLabel, loopOp);
 	Match(SEMICOLON);
 }
 
