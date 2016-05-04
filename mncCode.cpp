@@ -39,17 +39,15 @@ string CodeGen::getCurrentBoolShoutName() {
 
 string CodeGen::getCurrentEndNumber(){
     string val;
-    string temp = "IFEND";
     IntToAlpha(ifElseEndNum, val);
     ifElseEndNum++;
-    return (temp+val);
+    return (val);
 }
 
 string CodeGen::getCurrentElseNumber(){
     string val;
-    string temp = "ELSE";
     IntToAlpha(ifElseEndNum, val);
-    return (temp+val);
+    return (val);
 }
 
 
@@ -606,38 +604,56 @@ int CodeGen::calcNewRelativeAddress() {
     return relAddress;
 }
 
-void CodeGen::IfElse() {
-    //If there is an else clause
-    string theElse = getCurrentElseNumber();
-    Generate("LABEL    ", theElse, "");
+void CodeGen::IfThen(OpRec& opRec, string& numLbl) {
+    //If condition isn't met either jump to the end or out of loop
+    numLbl = getCurrentEndNumber();
+    string jumpToEnd = "IEND" + numLbl;
+    string jumpCond = "";
+    switch (opRec.oper){
+        case (LESS):
+            jumpCond = "JGE    ";
+            break;
+        case(LESS_EQUAL):
+            jumpCond = "JGT    ";
+            break;
+        case(EQUAL):
+            jumpCond = "JNE    ";
+            break;
+        case (NOT_EQUAL):
+            jumpCond = "JEQ    ";
+            break;
+        case (GREAT):
+            jumpCond = "JLE    ";
+            break;
+        case (GREAT_EQUAL):
+            jumpCond = "JLT    ";
+            break;
+    }
+    Generate(jumpCond, jumpToEnd, "");
 }
 
-void CodeGen::IfThen(OpRec& opRec) {
-    //If condition isn't met either jump to the end or out of loop
+void CodeGen::IfElse(string& numLbl) {
+    //If there is an else clause
+    Generate("JMP    ", "EEND" + numLbl, "");
+    Generate("LABEL    ", "ELSE" + numLbl, "");
+}
 
-
-    string jumpToEnd = getCurrentEndNumber();
-    Generate("JMP    ", jumpToEnd, "");
+void CodeGen::IfEnd(bool& isElse, string& numLbl) {
+    //Codey codedly code code stuff
+    Generate("JMP    ", "EEND" + numLbl, "");
+    Generate("LABEL    ", "IEND" + numLbl, "");
+    if (isElse){
+        Generate("JMP    ", "ELSE" + numLbl, "");
+    }
+    Generate("LABEL    ", "EEND" + numLbl, "");
 }
 
 void CodeGen::errorOccurred(string theError) {
     cout << endl << "The compiler encountered an error." << endl <<
-            "The error was located here: " << theError << endl;
+    "The error was located here: " << theError << endl;
 
     exit(1);
 
-
-
-}
-void CodeGen::IfEnd(bool& isElse) {
-    //Codey codedly code code stuff
-    string end;
-    string jumpToElse = getCurrentElseNumber();
-    IntToAlpha(ifElseEndNum, end); //use getCurrentElseNumber because we don't want to increment it again
-    Generate("LABEL    ", "IFEND" + end, "");
-    if (isElse){
-        Generate("JMP    ", jumpToElse, "");
-    }
 }
 
 void CodeGen::SetCondition(OpRec opRec) {

@@ -76,13 +76,13 @@ public:
     void ProcessOp(OpRec& op);
     //Boolean expression evaluation
 
-    void IfThen(OpRec& opRec);
+    void IfThen(OpRec& opRec, string& numLbl);
     //Produces the assembly code to handle an if-then statement
 
-    void IfEnd(bool& isElse);
+    void IfEnd(bool& isElse, string& numLbl);
     //Produces the assembly code to handle the end of an if statement
 
-    void IfElse();
+    void IfElse(string& numLbl);
     //Produces the assembly code for if there is an else statement
 
     void GenInfix(OpRec op, Expr& result);

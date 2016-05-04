@@ -494,7 +494,7 @@ void Parser::ForAssign()
 	// code.ForAssign();
 }
 
-void Parser::ElseClause(bool& isElse)
+void Parser::ElseClause(bool& isElse, string& numLbl)
 {
 	switch (NextToken())
 	{
@@ -502,7 +502,7 @@ void Parser::ElseClause(bool& isElse)
 		Match(ELSE_SYM);
 		isElse = true;
 			//set variable to truuuuue and pass it into ifend
-		code.IfElse();
+		code.IfElse(numLbl);
 		StmtList();
 		break;
 	case END_SYM:
@@ -595,16 +595,17 @@ void Parser::LoopStmt()
 void Parser::IfStmt()
 {
 	bool isThereAnElse;
+	string numLbl;
 	OpRec ifOpRec;
 	Match(IF_SYM);
 	Match(LBANANA);
 	Condition(ifOpRec);
 	Match(RBANANA);
-	code.IfThen(ifOpRec);
+	code.IfThen(ifOpRec, numLbl);
 	StmtList();
-	ElseClause(isThereAnElse);
+	ElseClause(isThereAnElse, numLbl);
 	Match(END_SYM);
-	code.IfEnd(isThereAnElse);
+	code.IfEnd(isThereAnElse, numLbl);
 }
 
 void Parser::ItemListTail()

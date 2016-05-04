@@ -83,7 +83,7 @@ private:
 
 	void ForAssign();
 
-	void ElseClause(bool& isElse);
+	void ElseClause(bool& isElse, string& numLbl);
 
 	void Condition(OpRec& opRec);
 
