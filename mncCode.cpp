@@ -27,6 +27,7 @@ CodeGen::CodeGen()
     maxString = 0;
     maxBoolShout = 0;
     ifElseEndNum = 0;
+    doUntilNum = 0;
 }
 
 string CodeGen::getCurrentBoolShoutName() {
@@ -50,7 +51,44 @@ string CodeGen::getCurrentElseNumber(){
     return (val);
 }
 
+string CodeGen::getCurrentDoUntilNum(){
+    string val;
+    IntToAlpha(doUntilNum, val);
+    doUntilNum++;
+    return (val);
+}
+void CodeGen::LoopBegin(string &startTheLoop) {
+//le stuff
+//gonna need a doUntilNum and function that returns as string and increments
+// call fn to get number, then generate the label
+    startTheLoop = getCurrentDoUntilNum();
+    Generate("LABEL    ", "LOOP" + startTheLoop, "");
+}
 
+void CodeGen::LoopEnd(string &endTheLoop, OpRec loopOp) {
+    string jumpCond = "";
+    switch (loopOp.oper){
+        case (LESS):
+            jumpCond = "JGE    ";
+            break;
+        case(LESS_EQUAL):
+            jumpCond = "JGT    ";
+            break;
+        case(EQUAL):
+            jumpCond = "JNE    ";
+            break;
+        case (NOT_EQUAL):
+            jumpCond = "JEQ    ";
+            break;
+        case (GREAT):
+            jumpCond = "JLE    ";
+            break;
+        case (GREAT_EQUAL):
+            jumpCond = "JLT    ";
+            break;
+    }
+    Generate(jumpCond, "LOOP" + endTheLoop, "");
+}
 
 void CodeGen::HipHipIndex(Expr &hiphip, Expr &index) {
     symbolTableEntries temp;
