@@ -568,14 +568,16 @@ void Parser::ForStmt()
 void Parser::WhileStmt()
 {
 	OpRec WhileOp;
+	string whileLbl;
 	Match(WHILE_SYM);
 	Match(LBANANA);
+	code.WhileCond(whileLbl);
 	Condition(WhileOp);
 	Match(RBANANA);
-	// code.WhileBegin();
+	code.WhileBegin(whileLbl);
 	StmtList();
 	Match(END_SYM);
-	// code.WhileEnd();
+	code.WhileEnd(whileLbl);
 }
 
 void Parser::LoopStmt()

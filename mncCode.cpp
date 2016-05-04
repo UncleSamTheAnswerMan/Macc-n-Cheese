@@ -56,17 +56,17 @@ void CodeGen::HipHipIndex(Expr &hiphip, Expr &index) {
     symbolTableEntries temp;
     string val;
     hiphip.hiphipIndex = true;
-    if (index.theType == intType){
-        IntToAlpha(index.intVal, val);
-        Generate("LD    ", "R10", " #" + val);
-    } else {
+//    if (index.theType == intType){
+//        IntToAlpha(index.intVal, val);
+//        Generate("LD    ", "R10", " #" + val);
+//    } else {
         temp = symbolTable[index.tableEntryIndex];
         if (temp.getDataType() != integer){
             string errorMessage = "in the HipHip index. Value must be an integer.";
             errorOccurred(errorMessage);
         } else {
             IntToAlpha(temp.getRelAddress(), val);
-            Generate("LDA    ", "R10", " +" + val + "(R15)");
+            Generate("LD    ", "R10", " +" + val + "(R15)");
         }
     }
 }
