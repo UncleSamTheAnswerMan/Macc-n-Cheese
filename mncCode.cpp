@@ -1010,7 +1010,7 @@ void CodeGen::GenInfix(OpRec op, Expr& result){
 
   ///Check for the same type
     if(leftside.getDataType() != rightside.getDataType()){
-        ///symantics error
+        errorOccurred("GenInfix non matching types");
     } else {
         string val;
         mathResult.setDataType(leftside.getDataType());
