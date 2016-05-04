@@ -28,6 +28,7 @@ struct OpRec {
     Expr leftSide;
     Expr rightSide;
     OpKind oper;
+    bool rightSet = false;
 };
 
 class CodeGen{
@@ -67,6 +68,14 @@ public:
 
     void Listen(const Expr& InExpr);
     //Produces the assembly code for reading a value for InExpr.
+
+    void WhileCond(string& whileLbl);
+
+    void WhileBegin(string& whileLbl, OpRec whileOp);
+
+    void WhileEnd(string& whileLbl);
+
+    string getCurrentWhileNum();
 
     void Start();
     // Initializes the compiler.
@@ -119,6 +128,7 @@ private:
     int maxBoolShout;
     int ifElseEndNum;
     int doUntilNum;
+    int whileNum;
 
 //    static map<string,int> HipHiplength;
 //    static map<string,int> Cheeselength;

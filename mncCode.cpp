@@ -28,6 +28,7 @@ CodeGen::CodeGen()
     maxBoolShout = 0;
     ifElseEndNum = 0;
     doUntilNum = 0;
+    whileNum = 0;
 }
 
 string CodeGen::getCurrentBoolShoutName() {
@@ -57,6 +58,49 @@ string CodeGen::getCurrentDoUntilNum(){
     doUntilNum++;
     return (val);
 }
+
+string CodeGen::getCurrentWhileNum(){
+    string val;
+    IntToAlpha(whileNum, val);
+    whileNum++;
+    return val;
+}
+
+void CodeGen::WhileCond(string &whileLbl) {
+    whileLbl = getCurrentWhileNum();
+    Generate("LABEL    ", "WILE" + whileLbl, "");
+}
+
+void CodeGen::WhileBegin(string &whileLbl, OpRec whileOp) {
+    string jumpCond = "";
+    switch (whileOp.oper){
+        case (LESS):
+            jumpCond = "JGE    ";
+            break;
+        case(LESS_EQUAL):
+            jumpCond = "JGT    ";
+            break;
+        case(EQUAL):
+            jumpCond = "JNE    ";
+            break;
+        case (NOT_EQUAL):
+            jumpCond = "JEQ    ";
+            break;
+        case (GREAT):
+            jumpCond = "JLE    ";
+            break;
+        case (GREAT_EQUAL):
+            jumpCond = "JLT    ";
+            break;
+    }
+    Generate(jumpCond, "WEND" + whileLbl, "");
+}
+
+void CodeGen::WhileEnd(string &whileLbl) {
+    Generate("JMP    ", "WILE" + whileLbl, "");
+    Generate("LABEL    ", "WEND" + whileLbl, "");
+}
+
 void CodeGen::LoopBegin(string &startTheLoop) {
 //le stuff
 //gonna need a doUntilNum and function that returns as string and increments
@@ -695,18 +739,32 @@ void CodeGen::errorOccurred(string theError) {
 
 void CodeGen::SetCondition(OpRec opRec) {
     symbolTableEntries leftSide = symbolTable[opRec.leftSide.tableEntryIndex];
-    symbolTableEntries rightSide = symbolTable[opRec.rightSide.tableEntryIndex];
-    if (leftSide.getDataType() == rightSide.getDataType()) {
-
-        string val;
-        IntToAlpha(leftSide.getRelAddress(), val);
-        Generate("LD    ", "R11", " +" + val + "(R15)");
-        IntToAlpha(rightSide.getRelAddress(), val);
-        Generate("LD    ", "R13", " +" + val + "(R15)");
-        if (leftSide.getDataType() == integer) {
+    string val;
+    if (opRec.rightSet) {
+        symbolTableEntries rightSide = symbolTable[opRec.rightSide.tableEntryIndex];
+        if (leftSide.getDataType() == rightSide.getDataType()) {
+            IntToAlpha(leftSide.getRelAddress(), val);
+            Generate("LD    ", "R11", " +" + val + "(R15)");
+            IntToAlpha(rightSide.getRelAddress(), val);
+            Generate("LD    ", "R13", " +" + val + "(R15)");
+            if (leftSide.getDataType() == integer) {
+                Generate("IC    ", "R11", "R13");
+            } else if (leftSide.getDataType() == floating) {
+                IntToAlpha(leftSide.getRelAddress()+2, val);
+                Generate("LD    ", "R12", " +" + val + "(R15)");
+                IntToAlpha(rightSide.getRelAddress()+2, val);
+                Generate("LD    ", "R14", " +" + val + "(R15)");
+                Generate("FC    ", "R11", "R13");
+            }
+        }
+    } else {
+        if (leftSide.getDataType() != boolean){
+            errorOccurred("Non-Boolean value used as boolean");
+        } else {
+            IntToAlpha(leftSide.getRelAddress(), val);
+            Generate("LD    ", "R11", " +" + val + "(R15)");
+            Generate("LD    ", "R13", " #1");
             Generate("IC    ", "R11", "R13");
-        } else if (leftSide.getDataType() == floating) {
-            Generate("FC    ", "R11", "R13");
         }
     }
 }

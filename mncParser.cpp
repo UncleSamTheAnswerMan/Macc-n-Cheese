@@ -420,10 +420,11 @@ void Parser::CondTail(OpRec& opRec)
 		code.ProcessOp(opRec);
 		Expression(condTailExpr);
 		opRec.rightSide = condTailExpr;
-
+		opRec.rightSet = true;
 		break;
 	case RBANANA:
 	case SEMICOLON:
+		opRec.rightSet = false;
 		break;
 	default:
 		SyntaxError(NextToken(), "");
@@ -574,7 +575,7 @@ void Parser::WhileStmt()
 	code.WhileCond(whileLbl);
 	Condition(WhileOp);
 	Match(RBANANA);
-	code.WhileBegin(whileLbl);
+	code.WhileBegin(whileLbl, WhileOp);
 	StmtList();
 	Match(END_SYM);
 	code.WhileEnd(whileLbl);
