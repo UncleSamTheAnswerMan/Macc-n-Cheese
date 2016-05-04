@@ -967,52 +967,87 @@ void CodeGen::ProcessOp(OpRec& op)
 }
 
 void CodeGen::GenInfix(OpRec op, Expr& result){
+    symbolTableEntries leftside;
+    symbolTableEntries rightside;
+    symbolTableEntries mathResult;
+    bool matched = false;
+    if (op.leftSide.theType == intType && op.rightSide.theType == intType){
+        matched = true;
+    }
 
-    symbolTableEntries leftside = symbolTable[op.leftSide.tableEntryIndex];
-    symbolTableEntries rightside = symbolTable[op.leftSide.tableEntryIndex];
+    if (op.leftSide.theType != intType){
+        leftside = symbolTable[op.leftSide.tableEntryIndex];
+        if (op.rightSide.theType == intType && leftside.getDataType() == integer){
+            matched = true;
+        }
+    }
+    if (op.rightSide.theType != intType){
+        rightside = symbolTable[op.rightSide.tableEntryIndex];
+        if (op.leftSide.theType == intType && rightside.getDataType() == integer){
+            matched = true;
+        }
+    }
+    if (leftside.getDataType() == rightside.getDataType()){
+        matched = true;
+    }
 
   ///Check for the same type
-    if(leftside.getDataType() != rightside.getDataType()){
+    if(!matched){
         ///symantics error
-    }
-    Generate("LD ", "R0", leftside.getRelAddress()+"(R15)");
-    Generate("LD ", "R2", rightside.getRelAddress()+"(R15)");
-    //TODO need temp symbol table entry
-    switch(op.oper){
-        case (PLUS):
-            switch (leftside.getDataType()){
-                case (integer):
+    } else {
+        string val;
+        mathResult.setDataType(leftside.getDataType());
+        mathResult.setName(getCurrentTempName());
+        mathResult.setHipHip(false);
+        mathResult.setRelAddress(calcNewRelativeAddress());
+        symbolTable.push_back(mathResult);
+        result.tableEntryIndex = symbolTable.size() - 1;
+        if (op.leftSide.theType == intType){
+            IntToAlpha(op.leftSide.intVal, val);
+            Generate("LD    ", "R0", " #" + val);
+        } else {
+            IntToAlpha(leftside.getRelAddress(), val);
+            Generate("LD ", "R0", " +" + val + "(R15)");
+        }
+        if (op.rightSide.theType == intType){
+            IntToAlpha(op.rightSide.intVal, val);
+            Generate("LD    ", "R2", " #" + val);
+        } else {
+            IntToAlpha(rightside.getRelAddress(), val);
+            Generate("LD ", "R2", " +" + val + "(R15)");
+        }
+        switch (op.oper) {
+            case (PLUS):
+                if (op.leftSide.theType == intType || leftside.getDataType() == integer) {
                     Generate("IA ", "R0", "R2");
-                case (floating):
+                } else {
                     Generate("FA ", "R0", "R2");
-            }
-        case (MINUS):
-            switch (leftside.getDataType()){
-                case (integer):
+                }
+                break;
+            case (MINUS):
+                if (op.leftSide.theType == intType || leftside.getDataType() == integer) {
                     Generate("IS ", "R0", "R2");
-                case (floating):
+                } else {
                     Generate("FS ", "R0", "R2");
-            }
-        case (MULT):
-            switch (leftside.getDataType()){
-                case (integer):
+                }
+                break;
+            case (MULT):
+                if (op.leftSide.theType == intType || leftside.getDataType() == integer) {
                     Generate("IM ", "R0", "R2");
-                case (floating):
+                } else {
                     Generate("FM ", "R0", "R2");
-            }
-        case (DIV):
-            switch (leftside.getDataType()){
-                case (integer):
+                }
+                break;
+            case (DIV):
+                if (op.leftSide.theType == intType || leftside.getDataType() == integer) {
                     Generate("ID ", "R0", "R2");
-                case (floating):
+                } else {
                     Generate("FD ", "R0", "R2");
-            }
+                }
+                break;
+        }
+        IntToAlpha(mathResult.getRelAddress(), val);
+        Generate("STO    ", "R0", " +" + val + "(R15)");
     }
 
 }
-//TODO cheese Assignment
-//cheeses no concatenation
-//LDA R1, STR1
-//LD R2, #18
-//BKT R1, STR2
-//go for length of smaller cheese

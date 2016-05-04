@@ -1,0 +1,258 @@
+LDA       R15,VARS
+LD    R0,NINT
+STO    R0, +0(R15)
+LD    R0,NINT
+STO    R0, +2(R15)
+LD    R0,NINT
+STO    R0, +4(R15)
+LD    R0,NREAL
+LD    R1, #4
+STO    R0, +6(R15)
+LD    R0,NREAL
+LD    R1, #4
+STO    R0, +10(R15)
+LD    R0,NREAL
+LD    R1, #4
+STO    R0, +14(R15)
+LD    R0,#1
+STO    R0, +0(R15)
+LD    R0,#170
+STO    R0, +2(R15)
+LDA    R0,FTEMP0
+LD    R1,#4
+BKT    R0, +18(R15)
+LDA    R0, +18(R15)
+LD    R1,#4
+BKT    R0, +6(R15)
+LDA    R0,FTEMP1
+LD    R1,#4
+BKT    R0, +22(R15)
+LDA    R0, +22(R15)
+LD    R1,#4
+BKT    R0, +10(R15)
+WRI     +0(R15)
+WRNL      
+WRI     +2(R15)
+WRNL      
+WRI     +0(R15)
+WRI     +2(R15)
+WRNL      
+WRF     +6(R15)
+WRNL      
+WRF     +10(R15)
+WRNL      
+WRF     +6(R15)
+WRF     +10(R15)
+WRNL      
+WRI     +0(R15)
+WRI     +2(R15)
+WRF     +6(R15)
+WRF     +10(R15)
+WRNL      
+LD R0, +0(R15)
+LD R2, +2(R15)
+IA R0,R2
+STO    R0, +26(R15)
+WRI     +26(R15)
+WRNL      
+LD R0, +0(R15)
+LD    R2, #2
+IA R0,R2
+STO    R0, +28(R15)
+LD    R0, +28(R15)
+STO R0, +4(R15)
+WRI     +4(R15)
+WRNL      
+LD R0, +2(R15)
+LD R2, +0(R15)
+IA R0,R2
+STO    R0, +30(R15)
+LD R0, +30(R15)
+LD    R2, #3
+IA R0,R2
+STO    R0, +32(R15)
+LD    R0, +32(R15)
+STO R0, +4(R15)
+WRI     +4(R15)
+WRNL      
+LD R0, +6(R15)
+LD R2, +10(R15)
+FA R0,R2
+STO    R0, +34(R15)
+WRF     +34(R15)
+WRNL      
+LD R0, +10(R15)
+LD R2, +6(R15)
+FA R0,R2
+STO    R0, +38(R15)
+LDA    R0, +38(R15)
+LD    R1,#4
+BKT    R0, +14(R15)
+WRF     +14(R15)
+WRNL      
+LDA    R0,FTEMP2
+LD    R1,#4
+BKT    R0, +42(R15)
+LDA    R0, +42(R15)
+LD    R1,#4
+BKT    R0, +6(R15)
+LDA    R0,FTEMP3
+LD    R1,#4
+BKT    R0, +46(R15)
+LDA    R0, +46(R15)
+LD    R1,#4
+BKT    R0, +10(R15)
+LD R0, +6(R15)
+LD R2, +10(R15)
+FA R0,R2
+STO    R0, +50(R15)
+LDA    R0, +50(R15)
+LD    R1,#4
+BKT    R0, +14(R15)
+WRF     +6(R15)
+WRNL      
+WRF     +10(R15)
+WRNL      
+WRF     +14(R15)
+WRNL      
+LDA    R0,FTEMP4
+LD    R1,#4
+BKT    R0, +54(R15)
+LDA    R0, +54(R15)
+LD    R1,#4
+BKT    R0, +6(R15)
+LDA    R0,FTEMP5
+LD    R1,#4
+BKT    R0, +58(R15)
+LDA    R0, +58(R15)
+LD    R1,#4
+BKT    R0, +10(R15)
+LDA    R0,FTEMP6
+LD    R1,#4
+BKT    R0, +62(R15)
+LDA    R0,FTEMP7
+LD    R1,#4
+BKT    R0, +66(R15)
+LD R0, +62(R15)
+LD R2, +66(R15)
+FA R0,R2
+STO    R0, +70(R15)
+LDA    R0, +70(R15)
+LD    R1,#4
+BKT    R0, +14(R15)
+WRF     +6(R15)
+WRNL      
+WRF     +10(R15)
+WRNL      
+WRF     +14(R15)
+WRNL      
+LDA    R0,FTEMP8
+LD    R1,#4
+BKT    R0, +74(R15)
+LDA    R0, +74(R15)
+LD    R1,#4
+BKT    R0, +6(R15)
+LDA    R0,FTEMP9
+LD    R1,#4
+BKT    R0, +78(R15)
+LDA    R0, +78(R15)
+LD    R1,#4
+BKT    R0, +10(R15)
+LD R0, +6(R15)
+LD R2, +10(R15)
+FA R0,R2
+STO    R0, +82(R15)
+LDA    R0, +82(R15)
+LD    R1,#4
+BKT    R0, +14(R15)
+WRF     +6(R15)
+WRNL      
+WRF     +10(R15)
+WRNL      
+WRF     +14(R15)
+WRNL      
+LD    R0,#2
+STO    R0, +0(R15)
+WRI     +0(R15)
+WRNL      
+LD    R0,#6
+STO    R0, +2(R15)
+WRI     +2(R15)
+WRNL      
+LD R0, +0(R15)
+LD R2, +2(R15)
+IM R0,R2
+STO    R0, +86(R15)
+LD    R0, +86(R15)
+STO R0, +4(R15)
+WRI     +4(R15)
+WRNL      
+LD R0, +2(R15)
+LD R2, +0(R15)
+ID R0,R2
+STO    R0, +88(R15)
+LD    R0, +88(R15)
+STO R0, +4(R15)
+WRI     +4(R15)
+WRNL      
+HALT      
+LABEL     VARS
+SKIP    2
+SKIP    2
+SKIP    2
+SKIP    4
+SKIP    4
+SKIP    4
+SKIP    4
+SKIP    4
+SKIP    2
+SKIP    2
+SKIP    2
+SKIP    2
+SKIP    4
+SKIP    4
+SKIP    4
+SKIP    4
+SKIP    4
+SKIP    4
+SKIP    4
+SKIP    4
+SKIP    4
+SKIP    4
+SKIP    4
+SKIP    4
+SKIP    4
+SKIP    2
+SKIP    2
+LABEL    NINT
+INT    0
+LABEL    NREAL
+REAL    0.0
+LABEL    NSTRING
+STRING    "\000"
+LABEL    FBOOL
+STRING    "FALSE"
+LABEL    TBOOL
+STRING    "TRUE"
+LABEL    BIGEMPT
+SKIP    1024
+LABEL    FTEMP0
+REAL    1.100000
+LABEL    FTEMP1
+REAL    2.200000
+LABEL    FTEMP2
+REAL    1.010000
+LABEL    FTEMP3
+REAL    1.010000
+LABEL    FTEMP4
+REAL    123.099998
+LABEL    FTEMP5
+REAL    321.100006
+LABEL    FTEMP6
+REAL    1.100000
+LABEL    FTEMP7
+REAL    2.000000
+LABEL    FTEMP8
+REAL    6.000000
+LABEL    FTEMP9
+REAL    5.100000
