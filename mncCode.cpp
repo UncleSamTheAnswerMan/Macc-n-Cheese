@@ -238,7 +238,6 @@ void CodeGen::Shout(Expr& shoutStuff) {
                         Generate("IC    ", "R0", "R2");
                         Generate("JNE    ", booShout, "");
                         Generate("WRST    ", "FBOOL", "");
-                        Generate("LABEL    ", booShout, "");
                         Generate("JMP    ", booShout + "END", "");
                         Generate("LABEL    ", booShout, "");
                         Generate("WRST    ", "TBOOL", "");
