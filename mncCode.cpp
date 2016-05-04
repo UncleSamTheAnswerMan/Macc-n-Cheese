@@ -64,7 +64,8 @@ void CodeGen::HipHipIndex(Expr &hiphip, Expr &index) {
     } else {
         temp = symbolTable[index.tableEntryIndex];
         if (temp.getDataType() != integer){
-            //TODO semantics error must be integer
+            string errorMessage = "in the HipHip index. Value must be an integer.";
+            errorOccurred(errorMessage);
         } else {
             IntToAlpha(temp.getRelAddress(), val);
             Generate("LDA    ", "R10", " +" + val + "(R15)");
@@ -420,7 +421,8 @@ void CodeGen::ProcessVar(Expr &e) {
         e.tableEntryIndex = index;
         e.theType = IDType;
     } else {
-        //TODO error stuff
+        string theError = "An error occurred in ProcessVar.";
+        errorOccurred(theError);
     }
 
 
@@ -604,10 +606,20 @@ void CodeGen::IfElse() {
 void CodeGen::IfThen(OpRec& opRec) {
     //If condition isn't met either jump to the end or out of loop
 
+
     string jumpToEnd = getCurrentEndNumber();
     Generate("JMP    ", jumpToEnd, "");
 }
 
+void CodeGen::errorOccurred(string theError) {
+    cout << endl << "The compiler encountered an error." << endl <<
+            "The error was located here: " << theError << endl;
+
+    exit(1);
+
+
+
+}
 void CodeGen::IfEnd(bool& isElse) {
     //Codey codedly code code stuff
     string end;
@@ -620,8 +632,21 @@ void CodeGen::IfEnd(bool& isElse) {
 }
 
 void CodeGen::SetCondition(OpRec opRec) {
+    symbolTableEntries leftSide = symbolTable[opRec.leftSide.tableEntryIndex];
+    symbolTableEntries rightSide = symbolTable[opRec.rightSide.tableEntryIndex];
+    if (leftSide.getDataType() == rightSide.getDataType()) {
 
-
+        string val;
+        IntToAlpha(leftSide.getRelAddress(), val);
+        Generate("LD    ", "R11", " +" + val + "(R15)");
+        IntToAlpha(rightSide.getRelAddress(), val);
+        Generate("LD    ", "R13", " +" + val + "(R15)");
+        if (leftSide.getDataType() == integer) {
+            Generate("IC    ", "R11", "R13");
+        } else if (leftSide.getDataType() == floating) {
+            Generate("FC    ", "R11", "R13");
+        }
+    }
 }
 
 void CodeGen::genFloatStatements() {
@@ -800,12 +825,14 @@ void CodeGen::Assign(Expr &Assign, Expr &AssignTail){
                 Generate("STO    ", "R0", " +" + val + "(R15)");
             }
         } else {
-            //TODO semantics error
+            string theError = "Error occured in assignment.";
+            errorOccurred(theError);
         }
     } else {//other assignments
         symbolTableEntries t = symbolTable[AssignTail.tableEntryIndex];
         if (t.getDataType() != A.getDataType()) {
-            //TODO semantics error
+            string theError = "Error in asisgnment. Data types do not match.";
+            errorOccurred(theError);
         } else {
 
             if (A.getHipHip()) {//assign to hiphip locations
