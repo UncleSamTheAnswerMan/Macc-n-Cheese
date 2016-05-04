@@ -93,7 +93,6 @@ public:
     static void makeItLowerCase(string& doIt);
 
     void SetCondition(OpRec opRec);
-    void SetCondition(OpRec opRec);
 
     void errorOccurred(string wheresTheError);
 

@@ -151,25 +151,31 @@ Token Scanner::GetNextToken()
             return CheckReserved();
         }
         else if (isdigit(currentChar))
-        {                                // integer literal
+        {
             BufferChar(currentChar);
             c = sourceFile.peek();
-            int decimalCount = 0; //a float must have exactly one period - HMH
-            while ((isdigit(c) && decimalCount <= 1) || (c == '.' && decimalCount < 1)){
+            int decimalCount = 0;
+            int minusPlusECount = 0;
+            //a float must have exactly one period - HMH
+            while ((isdigit(c) && decimalCount <= 1) || (c == '.' && decimalCount < 1) || (c == 'e' || c == 'E') || (c == '-' || c == '+')){
                 if (c == '.')
                 {
                     decimalCount++;
+                }
+                else if (c == 'e' || c == 'E'){
+                    minusPlusECount++;
                 }
                 currentChar = NextChar();
                 BufferChar(currentChar);
                 c = sourceFile.peek();
 
             }
-            if (decimalCount == 0)
+
+            if (decimalCount == 0 && minusPlusECount == 0)
             {
                 return INT_LIT;
             }
-            else
+            else if ((minusPlusECount > 0))
             {
                 return FLOAT_LIT;
             }
