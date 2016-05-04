@@ -175,7 +175,7 @@ Token Scanner::GetNextToken()
             {
                 return INT_LIT;
             }
-            else if ((minusPlusECount > 0))
+            else if ((minusPlusECount > 0) || decimalCount > 0)
             {
                 return FLOAT_LIT;
             }
