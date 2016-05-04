@@ -68,22 +68,22 @@ void CodeGen::LoopBegin(string &startTheLoop) {
 void CodeGen::LoopEnd(string &endTheLoop, OpRec loopOp) {
     string jumpCond = "";
     switch (loopOp.oper){
-        case (GREAT_EQUAL):
+        case (LESS):
             jumpCond = "JGE    ";
             break;
-        case(GREAT):
+        case(LESS_EQUAL):
             jumpCond = "JGT    ";
             break;
-        case(NOT_EQUAL):
+        case(EQUAL):
             jumpCond = "JNE    ";
             break;
-        case (EQUAL):
+        case (NOT_EQUAL):
             jumpCond = "JEQ    ";
             break;
-        case (LESS_EQUAL):
+        case (GREAT):
             jumpCond = "JLE    ";
             break;
-        case (LESS):
+        case (GREAT_EQUAL):
             jumpCond = "JLT    ";
             break;
     }
