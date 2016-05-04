@@ -63,7 +63,7 @@ private:
 
 	void AddOp();
 
-	void ExprTail();
+	void ExprTail(Expr& expr);
 
 	void Factor(Expr& expr);
 

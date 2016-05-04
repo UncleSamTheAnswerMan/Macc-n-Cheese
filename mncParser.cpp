@@ -334,18 +334,21 @@ void Parser::AddOp()
 	}
 }
 
-void Parser::ExprTail()
+void Parser::ExprTail(Expr& expr)
 {
     Expr exprTailExpr;
+	OpRec op;
+	op.leftSide = expr;
 	switch (NextToken())
 	{
 	case PLUS_OP:
 	case MINUS_OP:
 		AddOp();
-		// code.ProcessOp();
+		code.ProcessOp(op);
 		Factor(exprTailExpr);
-		// code.GenInfix();
-		ExprTail();
+		op.rightSide = exprTailExpr;
+		code.GenInfix(op, expr);
+		ExprTail(expr);
 		break;
 	case RSTAPLE:
 	case RBANANA:
@@ -686,13 +689,9 @@ void Parser::VarListTail()
 void Parser::VarList()
 {
 	Expr varListExpr;
-	//cout << "before variable" << endl;
 	Variable(varListExpr);
-	//cout << "after variable" << endl;
 	code.ProcessVar(varListExpr);
-	//cout << "after ProcessVar" << endl;
 	code.Listen(varListExpr);
-	//cout << "after Listen" << endl;
 	VarListTail();
 }
 
@@ -706,7 +705,7 @@ void Parser::InitList()
 void Parser::Expression(Expr& expr)
 {  //TODO set up opRec and make result be an expr that's passed back up
 	Factor(expr);
-	ExprTail();
+	ExprTail(expr);
 }
 
 void Parser::AssignTail(Expr & assignTailExpr)
