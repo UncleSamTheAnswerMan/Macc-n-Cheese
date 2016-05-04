@@ -80,7 +80,10 @@ void CodeGen::Shout(Expr& shoutStuff) {
     string booShout;
     switch (shoutStuff.theType){
         case (intType):
-            Generate("WRI       ", "#" + to_string(shoutStuff.intVal), "");
+            holdThis = symbolTable[shoutStuff.tableEntryIndex];
+            IntToAlpha(holdThis.getRelAddress(), val);
+            Generate("WRI    ", " +" + val + "(R15)" , "");
+            //Generate("WRI       ", "#" + to_string(shoutStuff.intVal), "");
             break;
         case (floatType):
             holdThis = symbolTable[shoutStuff.tableEntryIndex];
@@ -432,14 +435,14 @@ void CodeGen::ProcessLit(Expr& expr) {
     symbolTableEntries tempEntry;
     string val;
 
-    switch (expr.theType){
-
-        case (intType):
-            expr.intVal = atoi(scan.tokenBuffer.data());
-            break;
-        case (floatType):
-        case (cheeseType):
-        case (boolType):
+//    switch (expr.theType){
+//
+//        case (intType):
+//            expr.intVal = atoi(scan.tokenBuffer.data());
+//            break;
+//        case (floatType):
+//        case (cheeseType):
+//        case (boolType):
             tempEntry.setName(getCurrentTempName());
             tempEntry.setRelAddress(calcNewRelativeAddress());
 
@@ -478,13 +481,20 @@ void CodeGen::ProcessLit(Expr& expr) {
                 Generate("LD    ", "R1", "#4");
                 IntToAlpha(tempEntry.getRelAddress(), val);
                 Generate("BKT    ", "R0", " +" + val + "(R15)");
+            } else if (expr.theType == intType) {
+                int num = atoi(scan.tokenBuffer.data());
+                tempEntry.setDataType(integer);
+                IntToAlpha(num, val);
+                Generate("LD    ", "R0", " #" + val);
+                IntToAlpha(tempEntry.getRelAddress(), val);
+                Generate("STO    ", "R0", " +" + val + "(R15)");
             }
             expr.tableEntryIndex = symbolTable.size();
             symbolTable.push_back(tempEntry);
-            break;
-        default:
-            break;
-    }
+//            break;
+//        default:
+//            break;
+//    }
 }
 
 int CodeGen::oneOrTwo(int size) {
@@ -806,11 +816,12 @@ void CodeGen::Start()
 }
 void CodeGen::Assign(Expr &Assign, Expr &AssignTail){
     symbolTableEntries A = symbolTable[Assign.tableEntryIndex]; //left of the assignment
+    symbolTableEntries t = symbolTable[AssignTail.tableEntryIndex];
     string val;
     if (AssignTail.theType == intType){//working with int literal assignment
         if (A.getDataType() == integer) {
-            IntToAlpha(AssignTail.intVal, val);
-            Generate("LD    ", "R0", "#" + val);
+            IntToAlpha(t.getRelAddress(), val);
+            Generate("LD    ", "R0", " +" + val + "(R15)");
             if (A.getHipHip()) {
                 IntToAlpha(A.getRelAddress(), val);
                 Generate("LD    ", "R6", " #" + val);
@@ -825,13 +836,13 @@ void CodeGen::Assign(Expr &Assign, Expr &AssignTail){
                 Generate("STO    ", "R0", " +" + val + "(R15)");
             }
         } else {
-            string theError = "Error occured in assignment.";
+            string theError = "Error occurred in assignment.";
             errorOccurred(theError);
         }
     } else {//other assignments
-        symbolTableEntries t = symbolTable[AssignTail.tableEntryIndex];
+
         if (t.getDataType() != A.getDataType()) {
-            string theError = "Error in asisgnment. Data types do not match.";
+            string theError = "Error in assignment. Data types do not match.";
             errorOccurred(theError);
         } else {
 
@@ -994,32 +1005,12 @@ void CodeGen::ProcessOp(OpRec& op)
 }
 
 void CodeGen::GenInfix(OpRec op, Expr& result){
-    symbolTableEntries leftside;
-    symbolTableEntries rightside;
+    symbolTableEntries leftside = symbolTable[op.leftSide.tableEntryIndex];
+    symbolTableEntries rightside = symbolTable[op.rightSide.tableEntryIndex];
     symbolTableEntries mathResult;
-    bool matched = false;
-    if (op.leftSide.theType == intType && op.rightSide.theType == intType){
-        matched = true;
-    }
-
-    if (op.leftSide.theType != intType){
-        leftside = symbolTable[op.leftSide.tableEntryIndex];
-        if (op.rightSide.theType == intType && leftside.getDataType() == integer){
-            matched = true;
-        }
-    }
-    if (op.rightSide.theType != intType){
-        rightside = symbolTable[op.rightSide.tableEntryIndex];
-        if (op.leftSide.theType == intType && rightside.getDataType() == integer){
-            matched = true;
-        }
-    }
-    if (leftside.getDataType() == rightside.getDataType()){
-        matched = true;
-    }
 
   ///Check for the same type
-    if(!matched){
+    if(leftside.getDataType() != rightside.getDataType()){
         ///symantics error
     } else {
         string val;
@@ -1029,19 +1020,23 @@ void CodeGen::GenInfix(OpRec op, Expr& result){
         mathResult.setRelAddress(calcNewRelativeAddress());
         symbolTable.push_back(mathResult);
         result.tableEntryIndex = symbolTable.size() - 1;
-        if (op.leftSide.theType == intType){
-            IntToAlpha(op.leftSide.intVal, val);
-            Generate("LD    ", "R0", " #" + val);
+        if (leftside.getDataType() == integer){
+            IntToAlpha(leftside.getRelAddress(), val);
+            Generate("LD ", "R0", " +" + val + "(R15)");
         } else {
             IntToAlpha(leftside.getRelAddress(), val);
             Generate("LD ", "R0", " +" + val + "(R15)");
+            IntToAlpha(leftside.getRelAddress() + 2, val);
+            Generate("LD ", "R1", " +" + val + "(R15)");
         }
-        if (op.rightSide.theType == intType){
-            IntToAlpha(op.rightSide.intVal, val);
-            Generate("LD    ", "R2", " #" + val);
+        if (rightside.getDataType() == integer){
+            IntToAlpha(rightside.getRelAddress(), val);
+            Generate("LD ", "R2", " +" + val + "(R15)");
         } else {
             IntToAlpha(rightside.getRelAddress(), val);
             Generate("LD ", "R2", " +" + val + "(R15)");
+            IntToAlpha(rightside.getRelAddress() + 2, val);
+            Generate("LD ", "R3", " +" + val + "(R15)");
         }
         switch (op.oper) {
             case (PLUS):
@@ -1075,6 +1070,10 @@ void CodeGen::GenInfix(OpRec op, Expr& result){
         }
         IntToAlpha(mathResult.getRelAddress(), val);
         Generate("STO    ", "R0", " +" + val + "(R15)");
+        if(leftside.getDataType() != integer){
+            IntToAlpha(mathResult.getRelAddress() + 2, val);
+            Generate("STO     ", "R1", " +" + val + "(R15)");
+        }
     }
 
 }
