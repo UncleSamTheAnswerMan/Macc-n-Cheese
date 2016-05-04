@@ -106,7 +106,6 @@ void CodeGen::HipHipIndex(Expr &hiphip, Expr &index) {
             IntToAlpha(temp.getRelAddress(), val);
             Generate("LD    ", "R10", " +" + val + "(R15)");
         }
-    }
 }
 
 void CodeGen::Shout(Expr& shoutStuff) {
